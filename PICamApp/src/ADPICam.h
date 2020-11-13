@@ -102,7 +102,7 @@ public:
     virtual asynStatus writeFloat64(asynUser *pasynUser, epicsFloat64 value);
     virtual asynStatus readOctet(asynUser *pasynUser, char *value,
                                         size_t nChars, size_t *nActual,
-										int *eomReason);
+                                        int *eomReason);
 protected:
 
     int PICAM_VersionNumber;

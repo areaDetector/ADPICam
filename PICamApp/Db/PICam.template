@@ -53,7 +53,7 @@ record(mbbi, "$(P)$(R)AvailableCameras_RBV")
 {
     field(INP, "@asyn($(PORT),$(ADDR),$(TIMEOUT))PICAM_AVAILABLE_CAMERAS")
     field(DTYP, "asynInt32")
-	field(SCAN, "I/O Intr")
+    field(SCAN, "I/O Intr")
 }
 
 record(stringin, "$(P)$(R)CameraInterfaceUnavailable")
@@ -98,7 +98,7 @@ record(mbbi, "$(P)$(R)UnavailableCameras_RBV")
 {
     field(INP, "@asyn($(PORT),$(ADDR),$(TIMEOUT))PICAM_UNAVAILABLE_CAMERAS")
     field(DTYP, "asynInt32")
-	field(SCAN, "I/O Intr")
+    field(SCAN, "I/O Intr")
 }
 
 #Parameter Exists indicators
