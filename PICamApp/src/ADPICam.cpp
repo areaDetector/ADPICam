@@ -3501,10 +3501,12 @@ asynStatus ADPICam::piSetSelectedCamera(asynUser *pasynUser,
         }
 
 
+        std::string modelName = piModelName(availableCameraIDs[selectedIndex].model);
         asynPrint(pasynUser, ASYN_TRACE_FLOW,
                 "%s:%s: Selected camera value=%d, %s\n", driverName,
                 __func__, selectedIndex,
-                piModelName(availableCameraIDs[selectedIndex].model).c_str());
+                modelName.c_str());
+        status |= setStringParam(ADModel, modelName.c_str());
 
         std::string interfaceName = piEnumString(
                 PicamEnumeratedType_ComputerInterface,
