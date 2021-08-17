@@ -2321,7 +2321,6 @@ asynStatus ADPICam::piHandleAcquisitionUpdated(
         acqAvailableReadoutCount = 0;
     }
     dataLock.unlock();
-    epicsThreadSleep(0.000002);  // Twice the wait in piHandleNewImages
 
     return asynSuccess;
 }
