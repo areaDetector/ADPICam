@@ -9,6 +9,7 @@
 #include <cmath>
 #include <cstring>
 #include <algorithm>
+#include <stdexcept>
 
 #include <epicsTime.h>
 #include <epicsExit.h>
@@ -3742,7 +3743,7 @@ asynStatus ADPICam::piSetParameterValuesFromSelectedCamera() {
  * Set values for the ROI parameters.  PICAM holds these parameters in a single
  * object instead of as separate parameters.
  */
-asynStatus ADPICam::piSetSingleRoi(int minX, int minY, int width, int height,
+asynStatus ADPICam::piSetSingleRoi(int minX, int minY, int sizeX, int sizeY,
         int binX, int binY) {
     int status = asynSuccess;
     const PicamRoisConstraint *roisConstraints=NULL;
@@ -3779,15 +3780,15 @@ asynStatus ADPICam::piSetSingleRoi(int minX, int minY, int width, int height,
     bool allInRange = true;
     if (binX == 0) binX = 1;
     if (roisConstraints->rules & PicamRoisConstraintRulesMask_HorizontalSymmetry) {
-        if (width >= numXPixels / binX) {
-            width = numXPixels / binX;
+        if (sizeX >= numXPixels / binX) {
+            sizeX = numXPixels / binX;
         }
         //make sure pixels in each quadrant are divisible by binnning
-        if ((((width / 2) / binX) * binX) * 2 != width) {
-            width = (((width / 2) / binX) * binX) * 2;
+        if ((((sizeX / 2) / binX) * binX) * 2 != sizeX) {
+            sizeX = (((sizeX / 2) / binX) * binX) * 2;
         }
-        roi.x = ((numXPixels + 1) / 2) - ((width / 2) * binX);
-        roi.width = width * binX;
+        roi.x = ((numXPixels + 1) / 2) - ((sizeX / 2) * binX);
+        roi.width = sizeX * binX;
         roi.x_binning = binX;
     }
     else {
@@ -3799,29 +3800,29 @@ asynStatus ADPICam::piSetSingleRoi(int minX, int minY, int width, int height,
             minX = numXPixels;
         }
         roi.x = minX;
-        if (width < 1) {
-            width = 1;
+        if (sizeX < 1) {
+            sizeX = 1;
         }
-        else if (width > (numXPixels - minX) / binX) {
-            width = (numXPixels - minX) / binX;
-            if (width < 1) {
-                width = 1;
+        else if (sizeX > (numXPixels - minX) / binX) {
+            sizeX = (numXPixels - minX) / binX;
+            if (sizeX < 1) {
+                sizeX = 1;
             }
         }
-        roi.width = width * binX;
+        roi.width = sizeX * binX;
         roi.x_binning = binX;
     }
     if (binY == 0) binY = 1;
     if (roisConstraints->rules & PicamRoisConstraintRulesMask_VerticalSymmetry) {
-        if (height >= numYPixels / binY) {
-            height = numYPixels / binY;
+        if (sizeY >= numYPixels / binY) {
+            sizeX = numYPixels / binY;
         }
         //make sure pixels in each quadrant are divisible by binnning
-        if (((height / 2) / binY) * binY != height) {
-            height = (((height / 2) / binY) * binY) * 2;
+        if (((sizeY / 2) / binY) * binY != sizeY) {
+            sizeY = (((sizeY / 2) / binY) * binY) * 2;
         }
-        roi.y = ((numYPixels + 1) / 2) - ((height / 2) * binY);
-        roi.height = height * binY;
+        roi.y = ((numYPixels + 1) / 2) - ((sizeY / 2) * binY);
+        roi.height = sizeY * binY;
         roi.y_binning = binY;
     }
     else {
@@ -3833,16 +3834,16 @@ asynStatus ADPICam::piSetSingleRoi(int minX, int minY, int width, int height,
             minY = numYPixels;
         }
         roi.y = minY;
-        if (height > (numYPixels - minY) / binY) {
-            height = (numYPixels - minY) / binY;
-            if (height < 1) {
-                height = 1;
+        if (sizeY > (numYPixels - minY) / binY) {
+            sizeY = (numYPixels - minY) / binY;
+            if (sizeY < 1) {
+                sizeY = 1;
             }
         }
-        else if (height < 1) {
-            height = 1;
+        else if (sizeY < 1) {
+            sizeY = 1;
         }
-        roi.height = height * binY;
+        roi.height = sizeY * binY;
         roi.y_binning = binY;
     }
     PicamRois rois = { &(roi), 1 };
@@ -3873,7 +3874,7 @@ asynStatus ADPICam::piSetSingleRoi(int minX, int minY, int width, int height,
     return (asynStatus) status;
 }
 
-asynStatus ADPICam::piSetMultiRoi(asynUser *pasynUser, int minX, int width, int binX) {
+asynStatus ADPICam::piSetMultiRoi(asynUser *pasynUser, int minX, int sizeX, int binX) {
     // Tracks
     asynPrint(pasynUser, ASYN_TRACEIO_DEVICE,
         "%s:%s Enter\n",
@@ -3891,19 +3892,28 @@ asynStatus ADPICam::piSetMultiRoi(asynUser *pasynUser, int minX, int width, int 
     if (status == asynSuccess)
         status = setIntegerParam(ADSizeY, PICAM_CCDMultiTrack.DataHeight());
     if (status == asynSuccess)
-        status = setIntegerParam(NDArraySizeX, width / binX);
+        status = setIntegerParam(NDArraySizeX, sizeX / binX);
     if (status == asynSuccess)
-        status = setIntegerParam(ADSizeX, width / binX);
+        status = setIntegerParam(ADSizeX, sizeX / binX);
 
     PicamError error = PicamError_None;
 
     std::vector<PicamRoi> Regions;
     for (size_t TrackNo = 0; TrackNo < PICAM_CCDMultiTrack.size(); TrackNo++)
     {
+        /*
+       Princeton use 0-based exclusive co-ordinates:
+           x: The left-most column coordinate (zero-based).
+           width: The number of columns.
+           x_binning: The number of columns to group into a sum.
+           y: The top-most row coordinate (zero-based).
+           height: The number of rows.
+           y_binning: The number of rows to group into a sum.
+       */
         int BeginY = PICAM_CCDMultiTrack.TrackStart(TrackNo);
         int BinY = PICAM_CCDMultiTrack.TrackBin(TrackNo);
         int EndY = PICAM_CCDMultiTrack.TrackEnd(TrackNo);
-        PicamRoi Rgn = { minX, width, binX,
+        PicamRoi Rgn = { minX, sizeX, binX,
                         BeginY, EndY - BeginY + 1, BinY };
         Regions.push_back(Rgn);
     }

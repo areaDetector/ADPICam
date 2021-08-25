@@ -598,9 +598,9 @@ private:
             PicamParameter parameter, int relevence);
     asynStatus piSetParameterValuesFromSelectedCamera();
     asynStatus piSetRoisValuesFromSelectedCamera(const PicamParameter& parameter);
-    asynStatus piSetSingleRoi(int minX, int minY, int width, int height, int binX,
+    asynStatus piSetSingleRoi(int minX, int minY, int sizeX, int sizeY, int binX,
         int binY);
-    asynStatus piSetMultiRoi(asynUser *pasynUser, int minX, int width, int binX);
+    asynStatus piSetMultiRoi(asynUser *pasynUser, int minX, int sizeX, int binX);
     asynStatus piSetSelectedCamera(asynUser *pasynUser, int selectedIndex);
     asynStatus piSetSelectedUnavailableCamera(asynUser *pasynUser,
             int selectedIndex);
