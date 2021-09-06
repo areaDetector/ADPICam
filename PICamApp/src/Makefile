@@ -10,6 +10,9 @@ endif
 LIBRARY_IOC_WIN32 = ADPICam
 LIB_SRCS_WIN32 += ADPICam.cpp
 LIB_LIBS += Picam
+else
+LIB_SYS_LIBS += picam
+endif
 
 DBD += PICamSupport.dbd
 
