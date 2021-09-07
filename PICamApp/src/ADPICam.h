@@ -120,9 +120,7 @@ protected:
     int PICAM_FirmwareRevisionUnavailable;
 
     //Shutter Timing
-    int PICAM_ShutterClosingDelay;
     int PICAM_ShutterDelayResolution;
-    int PICAM_ShutterOpeningDelay;
     int PICAM_ShutterTimingMode;
 
     // Intensifier
@@ -222,11 +220,9 @@ protected:
     int PICAM_PixelHeight;
     int PICAM_PixelWidth;
     int PICAM_SensorActiveBottomMargin;
-//    int PICAM_SensorActiveHeight;
     int PICAM_SensorActiveLeftMargin;
     int PICAM_SensorActiveRightMargin;
     int PICAM_SensorActiveTopMargin;
-//    int PICAM_SensorActiveWidth;
     int PICAM_SensorMaskedBottomMargin;
     int PICAM_SensorMaskedHeight;
     int PICAM_SensorMaskedTopMargin;
