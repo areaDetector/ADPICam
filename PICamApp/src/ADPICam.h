@@ -227,6 +227,7 @@ protected:
     int PICAM_SensorMaskedHeight;
     int PICAM_SensorMaskedTopMargin;
     int PICAM_SensorSecondaryActiveHeight;
+    int PICAM_SensorActiveExtendedHeight;
     int PICAM_SensorSecondaryMaskedHeight;
     int PICAM_SensorType;
 
@@ -368,6 +369,7 @@ protected:
     int PICAM_SensorMaskedHeightExists;
     int PICAM_SensorMaskedTopMarginExists;
     int PICAM_SensorSecondaryActiveHeightExists;
+    int PICAM_SensorActiveExtendedHeightExists;
     int PICAM_SensorSecondaryMaskedHeightExists;
     int PICAM_SensorTypeExists;
     int PICAM_ActiveBottomMarginExists;
@@ -498,6 +500,7 @@ protected:
     int PICAM_SensorMaskedHeightRelevant;
     int PICAM_SensorMaskedTopMarginRelevant;
     int PICAM_SensorSecondaryActiveHeightRelevant;
+    int PICAM_SensorActiveExtendedHeightRelevant;
     int PICAM_SensorSecondaryMaskedHeightRelevant;
     int PICAM_SensorTypeRelevant;
     int PICAM_ActiveBottomMarginRelevant;
@@ -750,6 +753,7 @@ private:
 #define PICAM_SensorMaskedHeightString           "PICAM_SENSOR_MASKED_HEIGHT"
 #define PICAM_SensorMaskedTopMarginString        "PICAM_SENSOR_MASKED_TOP_MARGIN"
 #define PICAM_SensorSecondaryActiveHeightString  "PICAM_SENSOR_SECONDARY_ACTIVE_HEIGHT"
+#define PICAM_SensorActiveExtendedHeightString   "PICAM_SENSOR_ACTIVE_EXTENDED_HEIGHT"
 #define PICAM_SensorSecondaryMaskedHeightString  "PICAM_SENSOR_SECONDARY_MASKED_HEIGHT"
 #define PICAM_SensorTypeString                   "PICAM_SENSOR_TYPE"
 

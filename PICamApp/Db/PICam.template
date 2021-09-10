@@ -3146,6 +3146,13 @@ record(longin, "$(P)$(R)SensorSecondaryActiveHeight")
    field(SCAN, "I/O Intr")
 }
 
+record(longin, "$(P)$(R)SensorActiveExtendedHeight")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PICAM_SENSOR_ACTIVE_EXTENDED_HEIGHT")
+   field(SCAN, "I/O Intr")
+}
+
 record(longin, "$(P)$(R)SensorSecondaryMaskedHeight")
 {
    field(DTYP, "asynInt32")
