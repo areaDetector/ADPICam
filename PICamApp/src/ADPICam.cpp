@@ -1768,7 +1768,11 @@ asynStatus ADPICam::piAcquireStop(){
     pibln isRunning = false;
     Picam_IsAcquisitionRunning(currentCameraHandle, &isRunning);
     if (isRunning) {
-        Picam_StopAcquisition(currentDeviceHandle);
+        Picam_StopAcquisition(currentCameraHandle);
+    }
+    while(isRunning) {
+        Picam_IsAcquisitionRunning(currentCameraHandle, &isRunning);
+        epicsThreadSleep(0.1);
     }
     status = setIntegerParam(ADStatus, ADStatusIdle);
     if (status != asynSuccess) {
