@@ -4692,8 +4692,8 @@ asynStatus ADPICam::piWriteInt32CollectionType(asynUser *pasynUser,
         Picam_GetEnumerationString(PicamEnumeratedType_Error,
                 error,
                 &errorString);
-        Picam_GetEnumerationString(PicamEnumeratedType_Error,
-                error,
+        Picam_GetEnumerationString(PicamEnumeratedType_Parameter,
+                picamParameter,
                 &paramString);
         asynPrint(pasynUser, ASYN_TRACE_ERROR,
                 "%s:%s ERROR: problem getting Parameter value type for"
@@ -4713,8 +4713,8 @@ asynStatus ADPICam::piWriteInt32CollectionType(asynUser *pasynUser,
             Picam_GetEnumerationString(PicamEnumeratedType_Error,
                     error,
                     &errorString);
-            Picam_GetEnumerationString(PicamEnumeratedType_Error,
-                    error,
+            Picam_GetEnumerationString(PicamEnumeratedType_Parameter,
+                    picamParameter,
                     &paramString);
             asynPrint(pasynUser, ASYN_TRACE_ERROR,
                     "%s:%s ERROR: problem setting Parameter value for"
@@ -4736,8 +4736,8 @@ asynStatus ADPICam::piWriteInt32CollectionType(asynUser *pasynUser,
             Picam_GetEnumerationString(PicamEnumeratedType_Error,
                     error,
                     &errorString);
-            Picam_GetEnumerationString(PicamEnumeratedType_Error,
-                    error,
+            Picam_GetEnumerationString(PicamEnumeratedType_Parameter,
+                    picamParameter,
                     &paramString);
             asynPrint(pasynUser, ASYN_TRACE_ERROR,
                     "%s:%s ERROR: problem setting Parameter value for"
@@ -4760,8 +4760,8 @@ asynStatus ADPICam::piWriteInt32CollectionType(asynUser *pasynUser,
             Picam_GetEnumerationString(PicamEnumeratedType_Error,
                     error,
                     &errorString);
-            Picam_GetEnumerationString(PicamEnumeratedType_Error,
-                    error,
+            Picam_GetEnumerationString(PicamEnumeratedType_Parameter,
+                    picamParameter,
                     &paramString);
             asynPrint(pasynUser, ASYN_TRACE_ERROR,
                     "%s:%s ERROR: problem setting Parameter value for"
