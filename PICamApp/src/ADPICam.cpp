@@ -10,7 +10,7 @@
 #include <cstring>
 #include <algorithm>
 #include <stdexcept>
-#include <inttypes.h>
+#include <cinttypes>
 
 #include <epicsTime.h>
 #include <epicsExit.h>
