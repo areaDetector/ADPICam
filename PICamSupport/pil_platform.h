@@ -2,10 +2,11 @@
 /******************************************************************************/
 /******************************************************************************/
 /******************************************************************************/
-/* pil_platform.h - Princeton Instruments Library Platform Support            */
+/* pil_platform.h - Teledyne Princeton Instruments Library Platform Support   */
 /*                                                                            */
 /*  Supported Platforms:                                                      */
 /*      - PIL_WIN64                                                           */
+/*      - PIL_WIN32                                                           */
 /*      - PIL_LIN64                                                           */
 /******************************************************************************/
 /******************************************************************************/
@@ -19,6 +20,8 @@
 /******************************************************************************/
 #if defined _WIN64
 #    define PIL_WIN64
+#elif defined _WIN32
+#    define PIL_WIN32
 #elif defined __linux__ && defined __x86_64__
 #    define PIL_LIN64
 #else
@@ -51,6 +54,17 @@ typedef unsigned char   pibyte; /* byte native to platform                    */
     typedef unsigned long long pi64u; /* 64-bit unsigned integer              */
     typedef          float     pi32f; /* 32-bit floating point                */
     typedef          double    pi64f; /* 64-bit floating point                */
+#elif defined PIL_WIN32
+    typedef signed   char      pi8s;  /* 8-bit signed integer                 */
+    typedef unsigned char      pi8u;  /* 8-bit unsigned integer               */
+    typedef          short     pi16s; /* 16-bit signed integer                */
+    typedef unsigned short     pi16u; /* 16-bit unsigned integer              */
+    typedef          long      pi32s; /* 32-bit signed integer                */
+    typedef unsigned long      pi32u; /* 32-bit unsigned integer              */
+    typedef          long long pi64s; /* 64-bit signed integer                */
+    typedef unsigned long long pi64u; /* 64-bit unsigned integer              */
+    typedef          float     pi32f; /* 32-bit floating point                */
+    typedef          double    pi64f; /* 64-bit floating point                */
 #elif defined PIL_LIN64
     typedef signed   char      pi8s;  /* 8-bit signed integer                 */
     typedef unsigned char      pi8u;  /* 8-bit unsigned integer               */
@@ -70,6 +84,11 @@ typedef unsigned char   pibyte; /* byte native to platform                    */
 /* Function Declarations                                                      */
 /******************************************************************************/
 #if defined PIL_WIN64
+#   define PIL_EXPORT_DEF extern "C"
+#   define PIL_EXPORT     __declspec(dllexport)
+#   define PIL_IMPORT     __declspec(dllimport)
+#   define PIL_CALL       __stdcall
+#elif defined PIL_WIN32
 #   define PIL_EXPORT_DEF extern "C"
 #   define PIL_EXPORT     __declspec(dllexport)
 #   define PIL_IMPORT     __declspec(dllimport)
