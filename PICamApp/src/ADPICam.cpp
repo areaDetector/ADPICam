@@ -1585,7 +1585,7 @@ asynStatus ADPICam::writeInt32(asynUser *pasynUser, epicsInt32 value) {
     }
     else if (function == ADAcquire) {
         if (value && !acquiring) {
-            piAcquireStart();
+            piAcquireStart(pasynUser);
         }
         else if (!value && acquiring) {
             piAcquireStop();
@@ -1619,7 +1619,7 @@ asynStatus ADPICam::writeInt32(asynUser *pasynUser, epicsInt32 value) {
 /**
  * Internal method called when the Acquire button is pressed.
  */
-asynStatus ADPICam::piAcquireStart(){
+asynStatus ADPICam::piAcquireStart(asynUser *pasynUser){
     int status = asynSuccess;
     PicamError error = PicamError_None;
     int imageMode;
@@ -1628,7 +1628,7 @@ asynStatus ADPICam::piAcquireStart(){
     int numY;
 
     // Reset the number of Images Collected
-    asynPrint(pasynUserSelf, ASYN_TRACE_FLOW,
+    asynPrint(pasynUser, ASYN_TRACE_FLOW,
             "%s:%s Enter\n",
             driverName,
             __func__);
@@ -1660,7 +1660,7 @@ asynStatus ADPICam::piAcquireStart(){
         const char *pixelFormatString;
         Picam_GetEnumerationString(PicamEnumeratedType_PixelFormat,
                 pixelFormat, &pixelFormatString);
-        asynPrint(pasynUserSelf, ASYN_TRACE_ERROR,
+        asynPrint(pasynUser, ASYN_TRACE_ERROR,
                 "%s:%s Unknown data type setting to NDUInt16: %s\n",
                 driverName, __func__, pixelFormatString);
         Picam_DestroyString(pixelFormatString);
@@ -1707,7 +1707,7 @@ asynStatus ADPICam::piAcquireStart(){
 
     error = PicamAdvanced_SetAcquisitionBuffer(currentDeviceHandle, &piBuffer);
     if (error != PicamError_None) {
-        piReportError(pasynUserSelf, __func__, error,
+        piReportError(pasynUser, __func__, error,
                 "Error Setting accquisition buffer with size %lu",
                 (unsigned long) buffer_.size());
         setIntegerParam(ADAcquire, 0);
@@ -1725,10 +1725,10 @@ asynStatus ADPICam::piAcquireStart(){
             &failedParameterArray,
             &failedParameterCount);
     if (error != PicamError_None) {
-        piReportError(pasynUserSelf, __func__, error,
+        piReportError(pasynUser, __func__, error,
                 "Error with Picam_CommitParameters");
         for (int ii=0; ii<failedParameterCount; ii++) {
-            asynPrint(pasynUserSelf, ASYN_TRACE_ERROR,
+            asynPrint(pasynUser, ASYN_TRACE_ERROR,
                     "%s:%s Failed to commit parameter %s\n",
                     driverName,
                     __func__,
@@ -1740,7 +1740,7 @@ asynStatus ADPICam::piAcquireStart(){
     }
     error = Picam_StartAcquisition(currentCameraHandle);
     if (error != PicamError_None) {
-        piReportError(pasynUserSelf, __func__, error,
+        piReportError(pasynUser, __func__, error,
                 "Error with Picam_StartAcquisition");
 
         setIntegerParam(ADAcquire, 0);
@@ -1748,7 +1748,7 @@ asynStatus ADPICam::piAcquireStart(){
         return asynError;
     }
 
-    asynPrint(pasynUserSelf, ASYN_TRACE_FLOW,
+    asynPrint(pasynUser, ASYN_TRACE_FLOW,
             "%s:%s Exit\n",
             driverName,
             __func__);

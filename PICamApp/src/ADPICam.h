@@ -554,7 +554,7 @@ private:
     std::unordered_map<PicamParameter, int> parameterValueMap;
     std::unordered_map<int, PicamParameter> picamParameterMap;
     asynStatus initializeDetector();
-    asynStatus piAcquireStart();
+    asynStatus piAcquireStart(asynUser *pasynUser);
     asynStatus piAcquireStop();
     asynStatus piClearParameterExists();
     asynStatus piClearParameterRelevance();
