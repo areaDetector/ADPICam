@@ -975,6 +975,8 @@ asynStatus ADPICam::initializeDetector() {
             versionReleased);
     sprintf(picamVersion, "%d.%d.%d.%d", versionMajor, versionMinor,
             versionDistribution, versionReleased);
+    // For unknown reasons, we have both standard AD and PICAM-specific PVs
+    status |= setStringParam(ADSDKVersion, picamVersion);
     status |= setStringParam(PICAM_VersionNumber, (const char *) picamVersion);
     if (status) {
         asynPrint(pasynUserSelf, ASYN_TRACE_ERROR,
