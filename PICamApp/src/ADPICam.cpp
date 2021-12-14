@@ -2285,10 +2285,10 @@ asynStatus ADPICam::piHandleAcquisitionUpdated(
     acqStatusErrors = acqStatus->errors;
     acqStatusReadoutRate = acqStatus->readout_rate;
     asynPrint(pasynUserSelf, ASYN_TRACE_FLOW,
-            "%s:%s available %p\n",
+            "%s:%s available %" PRId64 "\n",
             driverName,
             __func__,
-            available);
+            available->readout_count);
 //    if ( (acqStatusErrors == PicamAcquisitionErrorsMask_None) &&
 //            acqStatusRunning){
     if (available && available->readout_count){
