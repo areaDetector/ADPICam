@@ -8,7 +8,12 @@ USR_CPPFLAGS += -D__X64
 endif
 
 LIBRARY_IOC_WIN32 = ADPICam
-LIB_SRCS_WIN32 += ADPICam.cpp
+LIBRARY_IOC_Linux = ADPICam
+LIB_SRCS += ADPICam.cpp
+
+ifeq (win32-x86, $(findstring win32-x86, $(T_A)))
+LIB_LIBS += Picam32
+else ifeq (windows-x64, $(findstring windows-x64, $(T_A)))
 LIB_LIBS += Picam
 else
 LIB_SYS_LIBS += picam
