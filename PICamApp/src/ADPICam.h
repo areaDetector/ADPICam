@@ -21,7 +21,7 @@
 #include <epicsString.h>
 #include <epicsEvent.h>
 #include <epicsThread.h>
-
+#include <CCDMultiTrack.h>
 
 #include "picam_advanced.h"
 
@@ -99,6 +99,8 @@ public:
     void piHandleNewImageTask(void);
     void report(FILE *fp, int details);
     virtual asynStatus writeInt32(asynUser *pasynUser, epicsInt32 value);
+    virtual asynStatus writeInt32Array(asynUser *pasynUser, epicsInt32 *value,
+            size_t nElements);
     virtual asynStatus writeFloat64(asynUser *pasynUser, epicsFloat64 value);
     virtual asynStatus readOctet(asynUser *pasynUser, char *value,
                                         size_t nChars, size_t *nActual,
@@ -220,6 +222,8 @@ protected:
     int PICAM_PixelHeight;
     int PICAM_PixelWidth;
     int PICAM_SensorActiveBottomMargin;
+
+    CCDMultiTrack PICAM_CCDMultiTrack;
     int PICAM_SensorActiveLeftMargin;
     int PICAM_SensorActiveRightMargin;
     int PICAM_SensorActiveTopMargin;
@@ -592,8 +596,10 @@ private:
     asynStatus piSetParameterRelevance(asynUser *pasynUser,
             PicamParameter parameter, int relevence);
     asynStatus piSetParameterValuesFromSelectedCamera();
-    asynStatus piSetRois(int minX, int minY, int width, int height, int binX,
-            int binY);
+    asynStatus piSetRoisValuesFromSelectedCamera(const PicamParameter& parameter);
+    asynStatus piSetRois(asynUser *pasynUser);
+    void piValidateAxis(int &min, int &size, int &bin,
+            int numPixels, bool symmetry);
     asynStatus piSetSelectedCamera(asynUser *pasynUser, int selectedIndex);
     asynStatus piSetSelectedUnavailableCamera(asynUser *pasynUser,
             int selectedIndex);

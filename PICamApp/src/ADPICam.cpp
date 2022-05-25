@@ -138,7 +138,9 @@ static void piReportError(asynUser *pasynUser, const char *functionName,
 ADPICam::ADPICam(const char *portName, int maxBuffers, size_t maxMemory,
         int priority, int stackSize) :
         ADDriver(portName, 1, int(NUM_PICAM_PARAMS), maxBuffers, maxMemory,
-        asynEnumMask, asynEnumMask, ASYN_CANBLOCK, 1, priority, stackSize) {
+        asynEnumMask, asynEnumMask, ASYN_CANBLOCK, 1, priority, stackSize),
+		PICAM_CCDMultiTrack(this)
+{
     int status = asynSuccess;
     const char *emptyStr = "";
     pibln libInitialized;
@@ -1462,7 +1464,6 @@ asynStatus ADPICam::writeFloat64(asynUser *pasynUser, epicsFloat64 value) {
 asynStatus ADPICam::writeInt32(asynUser *pasynUser, epicsInt32 value) {
     int status = asynSuccess;
     PicamError error = PicamError_None;
-    int sizeX, sizeY, binX, binY, minX, minY;
     int function = pasynUser->reason;
     PicamParameter picamParameter;
     int adStatus;
@@ -1471,11 +1472,6 @@ asynStatus ADPICam::writeInt32(asynUser *pasynUser, epicsInt32 value) {
     // Record status and acquire for use later
     getIntegerParam(ADStatus, &adStatus);
     getIntegerParam(ADAcquire, &acquiring);
-
-    // Make sure that we write the value to the param.  This may get changed
-    // at a later stage
-    setIntegerParam(function, value);
-
 
     if (function == PICAM_AvailableCameras) {
         status |= piSetSelectedCamera(pasynUser, (int) value);
@@ -1530,60 +1526,14 @@ asynStatus ADPICam::writeInt32(asynUser *pasynUser, epicsInt32 value) {
     }
     // AD parameters for ROI size & Bin size need to be mapped into
     // PICAM's PicamRois object.
-    else if (function == ADSizeX) {
-        int xstatus = asynSuccess;
-        sizeX = value;
-        xstatus |= getIntegerParam(ADSizeY, &sizeY);
-        xstatus |= getIntegerParam(ADBinX, &binX);
-        xstatus |= getIntegerParam(ADBinY, &binY);
-        xstatus |= getIntegerParam(ADMinX, &minX);
-        xstatus |= getIntegerParam(ADMinY, &minY);
-        xstatus |= piSetRois(minX, minY, sizeX, sizeY, binX, binY);
-    } else if (function == ADSizeY) {
-        int xstatus = asynSuccess;
-        xstatus |= getIntegerParam(ADSizeX, &sizeX);
-        sizeY = value;
-        xstatus |= getIntegerParam(ADBinX, &binX);
-        xstatus |= getIntegerParam(ADBinY, &binY);
-        xstatus |= getIntegerParam(ADMinX, &minX);
-        xstatus |= getIntegerParam(ADMinY, &minY);
-        xstatus |= piSetRois(minX, minY, sizeX, sizeY, binX, binY);
-    } else if (function == ADBinX) {
-        int xstatus = asynSuccess;
-        xstatus |= getIntegerParam(ADSizeX, &sizeX);
-        xstatus |= getIntegerParam(ADSizeY, &sizeY);
-        binX = value;
-        xstatus |= getIntegerParam(ADBinY, &binY);
-        xstatus |= getIntegerParam(ADMinX, &minX);
-        xstatus |= getIntegerParam(ADMinY, &minY);
-        xstatus |= piSetRois(minX, minY, sizeX, sizeY, binX, binY);
-    } else if (function == ADBinY) {
-        int xstatus = asynSuccess;
-        xstatus |= getIntegerParam(ADSizeX, &sizeX);
-        xstatus |= getIntegerParam(ADSizeY, &sizeY);
-        xstatus |= getIntegerParam(ADBinX, &binX);
-        binY = value;
-        xstatus |= getIntegerParam(ADMinX, &minX);
-        xstatus |= getIntegerParam(ADMinY, &minY);
-        xstatus |= piSetRois(minX, minY, sizeX, sizeY, binX, binY);
-    } else if (function == ADMinX) {
-        int xstatus = asynSuccess;
-        xstatus |= getIntegerParam(ADSizeX, &sizeX);
-        xstatus |= getIntegerParam(ADSizeY, &sizeY);
-        xstatus |= getIntegerParam(ADBinX, &binX);
-        xstatus |= getIntegerParam(ADBinY, &binY);
-        minX = value;
-        xstatus |= getIntegerParam(ADMinY, &minY);
-        xstatus |= piSetRois(minX, minY, sizeX, sizeY, binX, binY);
-    } else if (function == ADMinY) {
-        int xstatus = asynSuccess;
-        xstatus |= getIntegerParam(ADSizeX, &sizeX);
-        xstatus |= getIntegerParam(ADSizeY, &sizeY);
-        xstatus |= getIntegerParam(ADBinX, &binX);
-        xstatus |= getIntegerParam(ADBinY, &binY);
-        xstatus |= getIntegerParam(ADMinX, &minX);
-        minY = value;
-        xstatus |= piSetRois(minX, minY, sizeX, sizeY, binX, binY);
+    else if ((function == ADSizeX) || (function == ADSizeY) ||
+            (function == ADBinX) || (function == ADBinY) ||
+            (function == ADMinX) || (function == ADMinY)) {
+        // Pass down user-set value
+        status |= ADDriver::writeInt32(pasynUser, value);
+        // Calculate actual ROI(s) to be used
+        // (MinY, SizeY and BinY may be ignored if tracks are defined)
+        status |= piSetRois(pasynUser);
     }
     else if (function == ADAcquire) {
         if (value && !acquiring) {
@@ -1592,11 +1542,12 @@ asynStatus ADPICam::writeInt32(asynUser *pasynUser, epicsInt32 value) {
         else if (!value && acquiring) {
             piAcquireStop();
         }
+        status |= ADDriver::writeInt32(pasynUser, value);
     }
     else {
         /* If this parameter belongs to a base class call its method */
         if (function < PICAM_FIRST_PARAM) {
-            status = ADDriver::writeInt32(pasynUser, value);
+            status |= ADDriver::writeInt32(pasynUser, value);
         }
     }
 
@@ -1617,6 +1568,33 @@ asynStatus ADPICam::writeInt32(asynUser *pasynUser, epicsInt32 value) {
     return (asynStatus) status;
 
 }
+
+/* Called to set tracks definition parameters.
+   Sets up the track defintion. */
+asynStatus ADPICam::writeInt32Array(asynUser *pasynUser, epicsInt32 *value, size_t nElements)
+{
+    asynStatus status = asynSuccess;
+    try {
+        // Let the multi-track mixin handle the update
+        status = PICAM_CCDMultiTrack.writeInt32Array(pasynUser,
+                value, nElements);
+        if (status == asynError) {
+            // Not known - let superclass handle it
+            status = ADDriver::writeInt32Array(pasynUser, value, nElements);
+        } else {
+            // Set ROIs based on tracks or simple region
+            status = piSetRois(pasynUser);
+        }
+    }
+    catch (const std::string &e) {
+        asynPrint(pasynUserSelf, ASYN_TRACE_ERROR,
+                "%s:%s: %s\n",
+                driverName, __func__, e.c_str());
+        status = asynError;
+    }
+    return status;
+}
+
 
 /**
  * Internal method called when the Acquire button is pressed.
@@ -2676,17 +2654,23 @@ asynStatus ADPICam::piHandleParameterRoisValueChanged(PicamHandle camera,
     int status = asynSuccess;
     printf("parameter %s Rois value Changed\n",
             piParameterName(parameter).c_str());
-    asynPrint(pasynUserSelf, ASYN_TRACE_ERROR,
-            "\n----- minX = %d\n----- minY = %d\n"
-            "----- sizeX = %d\n----- sizeY = %d\n"
-            "----- binX = %d\n----- binY = %d\n", value->roi_array[0].x,
-            value->roi_array[0].y, value->roi_array[0].width,
-            value->roi_array[0].height, value->roi_array[0].x_binning,
-            value->roi_array[0].y_binning);
-    setIntegerParam(NDArraySizeX, value->roi_array[0].width /
-            value->roi_array[0].x_binning);
-    setIntegerParam(NDArraySizeY, value->roi_array[0].height /
-            value->roi_array[0].y_binning);
+    size_t dataHeight = 0;
+    size_t dataWidth = 0;
+    int i;
+    for (i = 0; i < value->roi_count; i++) {
+        PicamRoi &roi = value->roi_array[i];
+        asynPrint(pasynUserSelf, ASYN_TRACE_ERROR,
+                "----- roi[%d] x=%d:%d/%d y=%d:%d/%d\n",
+                i,
+                roi.x, roi.width, roi.x_binning,
+                roi.y, roi.height, roi.y_binning);
+        dataWidth = roi.width / roi.x_binning; // Expect all the same
+        dataHeight += roi.height / roi.y_binning;
+    }
+    setIntegerParam(NDArraySizeX, dataWidth);
+    setIntegerParam(NDArraySizeY, dataHeight);
+    setIntegerParam(ADSizeY, dataHeight);
+    setIntegerParam(ADSizeX, dataWidth);
 
     callParamCallbacks();
     asynPrint(pasynUserSelf, ASYN_TRACE_FLOW, "%s:%s Exit\n", driverName,
@@ -3036,6 +3020,78 @@ asynStatus ADPICam::piSetParameterRelevance(asynUser *pasynUser,
 }
 
 /**
+ * Infer size/min/bin and/or multi-ROI tracks from camera
+ */
+asynStatus ADPICam::piSetRoisValuesFromSelectedCamera(const PicamParameter& parameter)
+{
+    int status = asynSuccess;
+    const PicamRois *paramRois = NULL;
+    const PicamRoisConstraint *roiConstraint = NULL;
+    PicamError error = Picam_GetParameterRoisValue(currentCameraHandle,
+            parameter, &paramRois);
+    if (error != PicamError_None) {
+        piReportError(pasynUserSelf, __func__, error,
+                "Trouble getting ROI value");
+        return asynError;
+    }
+    error = Picam_GetParameterRoisConstraint(currentCameraHandle,
+            parameter, PicamConstraintCategory_Capable,
+            &roiConstraint);
+    if (error != PicamError_None) {
+        piReportError(pasynUserSelf, __func__, error,
+                "Trouble getting ROI constraint");
+        Picam_DestroyRois(paramRois);
+        return asynError;
+    }
+    PicamRoisConstraintRulesMask rules = roiConstraint->rules;
+    asynPrint(pasynUserSelf, ASYN_TRACE_ERROR, "Rois %d, rules 0X%X\n",
+        paramRois->roi_count, rules);
+    Picam_DestroyRoisConstraints(roiConstraint);
+
+    const PicamRoi *roi0 = &paramRois->roi_array[0];
+    if (paramRois->roi_count > 0) {
+        // For multi-track, X is the same for each track, so treat as for single ROI
+        status |= setIntegerParam(ADMinX, roi0->x);
+        status |= setIntegerParam(ADSizeX, roi0->width);
+        status |= setIntegerParam(ADBinX, roi0->x_binning);
+        // If symmetrical, minimum pixel may not be set (determined by size)
+        if (roiConstraint->rules & PicamRoisConstraintRulesMask_HorizontalSymmetry) {
+            setIntegerParam(PICAM_EnableROIMinXInput, 0);
+        } else {
+            setIntegerParam(PICAM_EnableROIMinXInput, 1);
+        }
+    }
+    if (paramRois->roi_count == 1) {
+        // Single ROI, so assume multi-ROI fature not in use
+        status |= setIntegerParam(ADMinY, roi0->y);
+        status |= setIntegerParam(ADSizeY, roi0->height);
+        status |= setIntegerParam(ADBinY, roi0->y_binning);
+        // If symmetrical, minimum pixel may not be set (determined by size)
+        if (roiConstraint->rules & PicamRoisConstraintRulesMask_VerticalSymmetry) {
+            setIntegerParam(PICAM_EnableROIMinYInput, 0);
+        } else {
+            setIntegerParam(PICAM_EnableROIMinYInput, 1);
+        }
+    } else {
+        // Multiple ROIs
+        std::vector<epicsInt32> start(paramRois->roi_count);
+        std::vector<epicsInt32> end(paramRois->roi_count);
+        std::vector<epicsInt32> bin(paramRois->roi_count);
+        int i;
+        for (i = 0; i < paramRois->roi_count; i++) {
+            const PicamRoi *roi = &paramRois->roi_array[i];
+            start[i] = roi->y;
+            end[i] = roi->y + roi->height - 1;
+            bin[i] = roi->y_binning;
+        }
+        // Should write these back
+    }
+
+    Picam_DestroyRois(paramRois);
+    return (asynStatus)status;
+}
+
+/**
  * Change the parameter values based on those stored in the camera as the
  * selected detector changes.
  */
@@ -3055,6 +3111,11 @@ asynStatus ADPICam::piSetParameterValuesFromSelectedCamera() {
             driverName, __func__, parameterCount);
 
     for (int ii = 0; ii < parameterCount; ii++) {
+        if (parameterList[ii] == PicamParameter_Rois) {
+            // This parameter cannot be handled here as it is multi-valued.
+            status |= piSetRoisValuesFromSelectedCamera(parameterList[ii]);
+            continue;
+        }
         std::string parameterName = piParameterName(parameterList[ii]);
         asynPrint(pasynUserSelf, ASYN_TRACE_FLOW, "---- Found %s\n",
                 parameterName.c_str());
@@ -3193,98 +3254,8 @@ asynStatus ADPICam::piSetParameterValuesFromSelectedCamera() {
                             currentCameraHandle,
                             parameterList[ii],
                             fltVal);
-//                    error = Picam_GetParameterConstraintType(
-//                            currentCameraHandle,
-//                            parameterList[ii],
-//                            &paramCT);
-//                    if (error != PicamError_None) {
-//                        Picam_GetEnumerationString(PicamEnumeratedType_Error, error,
-//                                &errorString);
-//                        asynPrint(pasynUserSelf, ASYN_TRACE_ERROR,
-//                                "%s:%s Trouble determining constraint type "
-//                                "for parameter %s.  %s",
-//                                driverName,
-//                                __func__,
-//                                paramString,
-//                                errorString);
-//                        Picam_DestroyString(errorString);
-//                    }
-//                    switch (paramCT) {
-//                    case PicamConstraintType_Collection:
-//                        const PicamCollectionConstraint *constraint;
-//                        error = Picam_GetParameterCollectionConstraint(
-//                                currentCameraHandle,
-//                                parameterList[ii],
-//                                PicamConstraintCategory_Capable,
-//                                &constraint);
-//                        if (error != PicamError_None) {
-//                            Picam_GetEnumerationString(PicamEnumeratedType_Error,
-//                                    error,
-//                                    &errorString);
-//                            asynPrint (pasynUserSelf, ASYN_TRACE_ERROR,
-//                                    "%s:%s ErrorGetting constraint for "
-//                                    "parameter %s. %s\n",
-//                                    driverName,
-//                                    __func__,
-//                                    paramString,
-//                                    errorString);
-//                            Picam_DestroyString(errorString);
-//                        }
-//                        for (int iParam = 0; iParam < constraint->values_count;
-//                                iParam++) {
-//                            if (constraint->values_array[iParam] == fltVal) {
-//                                setIntegerParam(driverParam, iParam);
-//                            }
-//                        }
-//                        break;
-//                    default:
-//                        status |= setDoubleParam(driverParam, fltVal);
-//                        break;
-//                    }
-                }
-
-            } else if (parameterList[ii] == PicamParameter_Rois) {
-                const PicamRois *paramRois;
-                const PicamRoisConstraint *roiConstraint;
-                error = Picam_GetParameterRoisValue(currentCameraHandle,
-                        parameterList[ii], &paramRois);
-                if (error != PicamError_None) {
-                    piReportError(pasynUserSelf, __func__, error,
-                            "Trouble getting ROI value");
-                    return asynError;
-                }
-                error = Picam_GetParameterRoisConstraint(currentCameraHandle,
-                        parameterList[ii], PicamConstraintCategory_Capable,
-                        &roiConstraint);
-                if (error != PicamError_None) {
-                    piReportError(pasynUserSelf, __func__, error,
-                            "Trouble getting ROI constraint");
-                    return asynError;
-                }
-                asynPrint(pasynUserSelf, ASYN_TRACE_ERROR, "Rois %d, rules 0X%X\n",
-                        paramRois->roi_count,  roiConstraint->rules);
-
-                if (paramRois->roi_count == 1) {
-                    setIntegerParam(ADBinX, paramRois->roi_array[0].x_binning);
-                    setIntegerParam(ADBinY, paramRois->roi_array[0].y_binning);
-                    setIntegerParam(ADMinX, paramRois->roi_array[0].x);
-                    setIntegerParam(ADMinY, paramRois->roi_array[0].y);
-                    setIntegerParam(ADSizeX, paramRois->roi_array[0].width);
-                    setIntegerParam(ADSizeY, paramRois->roi_array[0].height);
-                    setIntegerParam(NDArraySizeX, paramRois->roi_array[0].width);
-                    setIntegerParam(NDArraySizeY, paramRois->roi_array[0].height);
-                    if (roiConstraint->rules & PicamRoisConstraintRulesMask_HorizontalSymmetry) {
-                        setIntegerParam(PICAM_EnableROIMinXInput, 0);
-                    }
-                    else {
-                        setIntegerParam(PICAM_EnableROIMinXInput, 1);
-                    }
-                    if (roiConstraint->rules & PicamRoisConstraintRulesMask_VerticalSymmetry) {
-                        setIntegerParam(PICAM_EnableROIMinYInput, 0);
-                    }
-                    else {
-                        setIntegerParam(PICAM_EnableROIMinYInput, 1);
-                    }
+                default:
+                    break;
                 }
             }
         }
@@ -3293,6 +3264,12 @@ asynStatus ADPICam::piSetParameterValuesFromSelectedCamera() {
     Picam_DestroyParameters(parameterList);
     callParamCallbacks();
 
+    // Inform multi-track handler of CCD height
+    int maxSizeY;
+    if (! getIntegerParam(ADMaxSizeY, &maxSizeY)) {
+        PICAM_CCDMultiTrack.setMaxSize(pasynUserSelf, maxSizeY);
+    }
+    
     asynPrint(pasynUserSelf, ASYN_TRACE_FLOW, "%s:%s Exit\n", driverName,
             __func__);
 
@@ -3303,133 +3280,183 @@ asynStatus ADPICam::piSetParameterValuesFromSelectedCamera() {
  * Set values for the ROI parameters.  PICAM holds these parameters in a single
  * object instead of as separate parameters.
  */
-asynStatus ADPICam::piSetRois(int minX, int minY, int width, int height,
-        int binX, int binY) {
+asynStatus ADPICam::piSetRois(asynUser *pasynUser) {
     int status = asynSuccess;
-    const PicamRois *rois;
-    const PicamRoisConstraint *roisConstraints;
-    int numXPixels, numYPixels;
-
     PicamError error = PicamError_None;
-    getIntegerParam(ADMaxSizeX, & numXPixels);
-    getIntegerParam(ADMaxSizeY, & numYPixels);
-    error = Picam_GetParameterRoisValue(currentCameraHandle,
-            PicamParameter_Rois, &rois);
-    if (error != PicamError_None) {
-        piReportError(pasynUserSelf, __func__, error,
-                "Error retrieving rois");
-        return asynError;
-    }
+    const PicamRoisConstraint *roisConstraint;
+    int numXPixels, minX, sizeX, binX;
+
     error = Picam_GetParameterRoisConstraint(currentCameraHandle,
             PicamParameter_Rois, PicamConstraintCategory_Required,
-            &roisConstraints);
-    printf ("ROIConstraints->rules 0x%X\n", roisConstraints->rules);
+            &roisConstraint);
     if (error != PicamError_None) {
         piReportError(pasynUserSelf, __func__, error,
                 "Error retrieving rois constraints");
         return asynError;
     }
-    if (rois->roi_count == 1) {
-        PicamRoi *roi = &(rois->roi_array[0]);
-        if (binX == 0) binX = 1;
-        if (roisConstraints->rules & PicamRoisConstraintRulesMask_HorizontalSymmetry) {
-            if (width >= numXPixels/binX){
-                width = numXPixels/binX;
-            }
-            //make sure pixels in each quadrant are divisible by binnning
-            if ((((width/2)/binX) * binX) * 2 != width){
-                width = (((width/2)/binX) * binX)*2;
-            }
-            roi->x = ((numXPixels + 1)/2 ) - ((width/2) * binX) ;
-            roi->width = width * binX;
-            roi->x_binning = binX;
-            setIntegerParam(ADMinX, roi->x);
-            setIntegerParam(ADSizeX, width);
-            setIntegerParam(ADBinX, binX);
-        }
-        else {
+    PicamRoisConstraintRulesMask rules = roisConstraint->rules;
+    Picam_DestroyRoisConstraints(roisConstraint);
 
-            if (minX < 1) {
-                minX = 1;
-            } else if (minX > numXPixels-binX) {
-                minX = numXPixels;
-            }
-            roi->x = minX;
-            setIntegerParam(ADMinX, minX);
-            if (width < 1){
-                width = 1;
-            } else if (width > (numXPixels - minX + 1)/binX) {
-                width = (numXPixels - minX + 1)/binX;
-                if (width < 1) {
-                    width = 1;
-                }
-            }
-            roi->width = width * binX;
-            roi->x_binning = binX;
-            setIntegerParam(ADSizeX, width);
-            setIntegerParam(ADBinX, binX);
+    // First, treat X axis
+    status |= getIntegerParam(ADMaxSizeX, &numXPixels);
+    status |= getIntegerParam(ADMinX, &minX);
+    status |= getIntegerParam(ADSizeX, &sizeX);
+    status |= getIntegerParam(ADBinX, &binX);
 
-        }
-        if (binY == 0) binY = 1;
-        if (roisConstraints->rules & PicamRoisConstraintRulesMask_VerticalSymmetry) {
-            if (height >= numYPixels/binY ){
-                height = numYPixels/binY;
-            }
-            //make sure pixels in each quadrant are divisible by binnning
-            if (((height/2)/binY) * binY != height){
-                height = (((height/2)/binY) * binY)*2;
-            }
-            roi->y = ((numYPixels + 1)/2 ) - ((height/2) * binY) ;
-            roi->height = height * binY;
-            roi->y_binning = binY;
-            setIntegerParam(ADMinY, roi->y);
-            setIntegerParam(ADSizeY, height);
-            setIntegerParam(ADBinY, binY);
-        }
-        else {
+    piValidateAxis(
+            minX, sizeX, binX,          // May be adjusted
+            numXPixels,
+            (rules & PicamRoisConstraintRulesMask_HorizontalSymmetry) != 0);
+    // Update RBVs
+    setIntegerParam(ADMinX, minX);
+    setIntegerParam(ADSizeX, sizeX);
+    setIntegerParam(ADBinX, binX);
 
-            if (minY < 1){
-                minY = 1;
-            }
-            else if (minY > numYPixels){
-                minY = numYPixels;
-            }
-            roi->y = minY;
-            setIntegerParam(ADMinY, minY);
-            if (height > (numYPixels - minY + 1)/binY) {
-                height = (numYPixels - minY + 1)/binY;
-                if (height < 1) {
-                    height = 1;
-                }
-            } else if (height < 1 ) {
-                height = 1;
-            }
-            roi->height = height * binY;
-            roi->y_binning = binY;
-            setIntegerParam(ADSizeY, height);
-            setIntegerParam(ADBinY, binY);
-        }
+    // Now, Y axis.  If no tracks defined, treat as simple region
+    if (PICAM_CCDMultiTrack.size() == 0) {
+        int numYPixels, minY, sizeY, binY;
+        status |= getIntegerParam(ADMaxSizeY, &numYPixels);
+        status |= getIntegerParam(ADSizeY, &sizeY);
+        status |= getIntegerParam(ADBinY, &binY);
+        status |= getIntegerParam(ADMinY, &minY);
+
+        piValidateAxis(
+                minY, sizeY, binY,          // May be adjusted
+                numYPixels,
+                (rules & PicamRoisConstraintRulesMask_HorizontalSymmetry) != 0);
+        // Update RBVs
+        setIntegerParam(ADMinY, minY);
+        setIntegerParam(ADSizeY, sizeY);
+        setIntegerParam(ADBinY, binY);
+
+        // Set up the camera
+        PicamRoi roi = {
+            .x         = minX,
+            .width     = sizeX,
+            .x_binning = binX,
+            .y         = minY,
+            .height    = sizeY,
+            .y_binning = binY,
+        };
+        PicamRois rois = {.roi_array = &roi, .roi_count = 1,};
         error = Picam_SetParameterRoisValue(currentCameraHandle,
-                PicamParameter_Rois, rois);
+                PicamParameter_Rois, &rois);
         if (error != PicamError_None) {
-            piReportError(pasynUserSelf, __func__, error,
+            piReportError(pasynUser, __func__, error,
                     "Error writing rois");
             asynPrint(pasynUserSelf, ASYN_TRACE_ERROR,
                     "(x,y) = (%d, %d), (width, height) = (%d, %d), "
                     "(xbin, ybin) = (%d, %d)\n",
-                    roi->x,
-                    roi->y,
-                    roi->width,
-                    roi->height,
-                    roi->x_binning,
-                    roi->y_binning);
-            return asynError;
+                    roi.x,
+                    roi.y,
+                    roi.width,
+                    roi.height,
+                    roi.x_binning,
+                    roi.y_binning);
+            status = asynError;
+        }
+
+    } else {
+        // Have tracks defined, so treat multiple ROIs
+
+        // Check and maybe adjust track parameters
+        std::vector<NDDimension_t> tracks = PICAM_CCDMultiTrack.validTracks();
+
+        // Convert to struct required by Picam library
+        std::vector<PicamRoi> roi_array;
+        for (size_t t = 0; t < tracks.size(); t++) {
+            PicamRoi roi = {
+                .x         = minX,
+                .width     = sizeX,
+                .x_binning = binX,
+                .y         = piint(tracks[t].offset),
+                .height    = piint(tracks[t].size),
+                .y_binning = piint(tracks[t].binning),
+            };
+            roi_array.push_back(roi);
+        }
+        PicamRois rois = {
+            .roi_array = &roi_array[0],
+            .roi_count = piint(roi_array.size()),
+        };
+        error = Picam_SetParameterRoisValue(currentCameraHandle,
+                PicamParameter_Rois, &rois);
+        if (error != PicamError_None) {
+            piReportError(pasynUser, __func__, error,
+                    "Error writing rois");
+            for (size_t i = 0; i < roi_array.size(); i++) {
+                PicamRoi &roi = roi_array[i];
+                asynPrint(pasynUser, ASYN_TRACE_ERROR,
+                        "(x,y) = (%d, %d), (height, width) = (%d, %d), "
+                        "(xbin, ybin) = (%d, %d)\n",
+                        roi.x,
+                        roi.y,
+                        roi.width,
+                        roi.height,
+                        roi.x_binning,
+                        roi.y_binning);
+            }
+            status = asynError;
         }
     }
+
     callParamCallbacks();
-    Picam_DestroyRoisConstraints(roisConstraints);
-    Picam_DestroyRois(rois);
     return (asynStatus) status;
+}
+
+/**
+ * Adjust min/size/bin values on one axis.
+ */
+void ADPICam::piValidateAxis(int &min, int &size, int &bin,
+        int numPixels, bool symmetry)
+{
+    if (symmetry) {
+        // Some cameras types e.g. Blaze & Quadro require symmetry in horizontal
+        // and/or vertical direction.
+        // Constrain to a whole number of binned areas in the first half,
+        // with minX being derived entirely from size and binning.
+        int hnum = numPixels / 2;
+        if (bin < 1) {
+            bin = 1;
+        }
+        if (bin > hnum) {
+            bin = hnum;
+        }
+        int hsize = size / 2;
+        if (hsize < bin) {
+            hsize = bin;
+        }
+        if (hsize > hnum) {
+            hsize = hnum;
+        }
+        if (bin && hsize % bin != 0) {
+            hsize = (hsize / bin) * bin;
+        }
+        min = hnum - hsize;
+        size = hsize * 2;
+    } else {
+        if (bin < 1) {
+            bin = 1;
+        }
+        if (bin > numPixels) {
+            bin = numPixels;
+        }
+        if (min < 0) {
+            min = 0;
+        }
+        if (min > numPixels - bin) {
+            min = numPixels - bin;
+        }
+        if (size < bin) {
+            size = bin;
+        }
+        if (size > numPixels - min) {
+            size = numPixels - min;
+        }
+        if (bin && size % bin != 0) {
+            size = (size / bin) * bin;
+        }
+    }
 }
 
 /**
@@ -3535,11 +3562,33 @@ asynStatus ADPICam::piSetSelectedCamera(asynUser *pasynUser,
         } else {
             status |= setStringParam(PICAM_FirmwareRevision, "N/A");
         }
+
+        // Update the sensor dimensions now as ROI callbacks are dependent on this
+        int sensorWidth, sensorHeight;
+        error = Picam_GetParameterIntegerValue(currentCameraHandle,
+                PicamParameter_SensorActiveWidth, &sensorWidth);
+        if (error != PicamError_None) {
+                piReportError(pasynUserSelf, __func__, error,
+                        "Trouble Getting Sensor Width");
+                return (asynStatus)asynError;
+                }
+        error = Picam_GetParameterIntegerValue(currentCameraHandle,
+                PicamParameter_SensorActiveHeight, &sensorHeight);
+        if (error != PicamError_None) {
+                piReportError(pasynUserSelf, __func__, error,
+                        "Trouble Getting Sensor Height");
+                return (asynStatus)asynError;
+                }
+        status |= setIntegerParam(ADMaxSizeX, sensorWidth);
+        status |= setIntegerParam(ADMaxSizeY, sensorHeight);
+
     } else {
+
         setIntegerParam(PICAM_AvailableCameras, 0);
         setIntegerParam(PICAM_UnavailableCameras, 0);
 
     }
+
     callParamCallbacks();
 
     status |= piRegisterValueChangeWatch(currentCameraHandle);

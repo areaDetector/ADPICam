@@ -11,6 +11,8 @@ epicsEnvSet("QSIZE",  "20")
 epicsEnvSet("XSIZE",  "2048")
 epicsEnvSet("YSIZE",  "2048")
 epicsEnvSet("NCHANS", "2048")
+# The maximum number of frames buffered in the NDPluginCircularBuff plugin
+epicsEnvSet("CBUFFS", "500")
 
 # The search path for database files
 epicsEnvSet("EPICS_DB_INCLUDE_PATH", "$(ADCORE)/db")
@@ -33,7 +35,7 @@ dbLoadRecords("$(ADPICAM)/db/PICam.template","P=$(PREFIX),R=cam1:,PORT=$(PORT),A
 # Create a standard arrays plugin, set it to get data from Driver.
 NDStdArraysConfigure("Image1", 3, 0, "$(PORT)", 0)
 dbLoadRecords("$(ADCORE)/db/NDPluginBase.template","P=$(PREFIX),R=image1:,PORT=Image1,ADDR=0,TIMEOUT=1,NDARRAY_PORT=$(PORT),NDARRAY_ADDR=0")
-dbLoadRecords("$(ADCORE)/db/NDStdArrays.template", "P=$(PREFIX),R=image1:,PORT=Image1,ADDR=0,TIMEOUT=1,TYPE=Int16,SIZE=16,FTVL=SHORT,NELEMENTS=20000000")
+dbLoadRecords("$(ADCORE)/db/NDStdArrays.template", "P=$(PREFIX),R=image1:,PORT=Image1,ADDR=0,TIMEOUT=1,NDARRAY_PORT=$(PORT),TYPE=Int16,SIZE=16,FTVL=SHORT,NELEMENTS=20000000")
 
 # Load all other plugins using commonPlugins.cmd
 < $(ADCORE)/iocBoot/commonPlugins.cmd

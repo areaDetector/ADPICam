@@ -3,6 +3,9 @@
 # See LICENSE file.
 #
 # Database file for PICam Driver
+
+include "CCDMultiTrack.template"
+
 record(stringin, "$(P)$(R)VersionNumber")
 {
    field(DTYP, "asynOctetRead")
