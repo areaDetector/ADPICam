@@ -149,7 +149,7 @@ ADPICam::ADPICam(const char *portName, int maxBuffers, size_t maxMemory,
     int enableDisplay = 1;
 
     currentCameraHandle = NULL;
-    selectedCameraIndex = -1;
+    selectedCameraIndex = 0;
     availableCamerasCount = 0;
     unavailableCamerasCount = 0;
     imageThreadKeepAlive = true;
@@ -203,49 +203,6 @@ ADPICam::ADPICam(const char *portName, int maxBuffers, size_t maxMemory,
 
     ADPICam_Instance = this;
 
-    //Open First available camera.  If no camera is available,
-    // then open a demo camera
-    error = Picam_OpenFirstCamera(&currentCameraHandle);
-
-    if (error != PicamError_None) {
-        if (error == PicamError_NoCamerasAvailable) {
-            error = Picam_ConnectDemoCamera(PicamModel_Quadro4320,
-                    "CamNotFoundOnInit", &demoId);
-            if (error != PicamError_None) {
-                asynPrint(pasynUserSelf, ASYN_TRACE_ERROR,
-                        "-------------------------------------------------\n");
-                piReportError(pasynUserSelf, __func__, error,
-                        "No detectors were available and cannot connect to "
-                        "demo camera %s",
-                        piModelName(PicamModel_Quadro4320).c_str());
-                asynPrint(pasynUserSelf, ASYN_TRACE_ERROR,
-                        "Cannot run without a detector. \n"
-                        "-------------------------------------------------\n");
-                return;
-            }
-            error = Picam_OpenFirstCamera(&currentCameraHandle);
-            if (error != PicamError_None) {
-                asynPrint(pasynUserSelf, ASYN_TRACE_ERROR,
-                        "------------------------------------------------\n");
-                piReportError(pasynUserSelf, __func__, error,
-                        "Trouble opening demo camera %s",
-                        piModelName(PicamModel_Quadro4320).c_str());
-                asynPrint(pasynUserSelf, ASYN_TRACE_ERROR,
-                        "------------------------------------------------\n");
-                return;
-            }
-        } else {
-            asynPrint(pasynUserSelf, ASYN_TRACE_ERROR,
-                    "------------------------------------------------\n");
-            piReportError(pasynUserSelf, __func__, error,
-                    "Unhandled Error opening first camera");
-            asynPrint(pasynUserSelf, ASYN_TRACE_ERROR,
-                    "------------------------------------------------\n");
-            return;
-        }
-    }
-    PicamAdvanced_GetCameraDevice(currentCameraHandle, &currentDeviceHandle);
-    selectedCameraIndex = 0;
     createParam(PICAM_VersionNumberString, asynParamOctet,
             &PICAM_VersionNumber);
     // Available Camera List
@@ -909,19 +866,15 @@ ADPICam::ADPICam(const char *portName, int maxBuffers, size_t maxMemory,
     status |= setIntegerParam(PICAM_EnableROISizeYInput, enableDisplay);
     callParamCallbacks();
 
-    piLoadAvailableCameraIDs();
-    setIntegerParam(PICAM_AvailableCameras, 0);
-    callParamCallbacks();
-
-    piLoadUnavailableCameraIDs();
     if (status) {
         asynPrint(pasynUserSelf, ASYN_TRACE_ERROR,
                 "%s:%s: unable to set camera parameters\n", driverName,
                 __func__);
         return;
     }
-    piHandleNewImageEvent = epicsEventCreate(epicsEventEmpty);
+
     /* Create the thread that updates the images */
+    piHandleNewImageEvent = epicsEventCreate(epicsEventEmpty);
     status = (epicsThreadCreate("piHandleNewImageTaskC",
                                 epicsThreadPriorityMedium,
                                 epicsThreadGetStackSize(epicsThreadStackMedium),
@@ -930,6 +883,15 @@ ADPICam::ADPICam(const char *portName, int maxBuffers, size_t maxMemory,
 
     // Assocaite our callback with camera discovery and load SDK metadata
     initializeDetector();
+
+    // Load cameras that are currently connected
+    piLoadAvailableCameraIDs();
+    piLoadUnavailableCameraIDs();
+
+    // Set the first available camera (if there is one) as the current camera
+    // discovery only works for new cameras and won't find one already connected.
+    setIntegerParam(PICAM_AvailableCameras, 0);
+    callParamCallbacks();
 
     epicsAtExit(exitCallbackC, this);
 }
