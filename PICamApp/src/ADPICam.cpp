@@ -2345,6 +2345,10 @@ asynStatus ADPICam::piHandleCameraDiscovery(const PicamCameraID *id,
                 piSetSelectedCamera(pasynUserSelf, selectedCameraIndex);
             }
 
+        // If device is null we haven't seen this camera before.
+        // Connect if we haven't already got a camera.
+        } else if (currentCameraHandle == NULL) {
+            piSetSelectedCamera(pasynUserSelf, 0);
         }
         break;
     case PicamDiscoveryAction_Lost:
