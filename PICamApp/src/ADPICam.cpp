@@ -1145,6 +1145,8 @@ asynStatus ADPICam::readOctet(asynUser *pasynUser, char *value,
                 *nActual = strlen(value);
                 Picam_DestroyString(enumString);
                 break;
+            default:
+                break;
             }
         }
     }
@@ -1798,6 +1800,7 @@ PicamError PIL_CALL ADPICam::piAcquistionUpdated(
     status = ADPICam_Instance->piHandleAcquisitionUpdated(device,
             available, acqStatus);
 
+    (void) status;                      // Ignore errors (?)
     return PicamError_None;
 }
 
@@ -1862,6 +1865,7 @@ PicamError PIL_CALL ADPICam::piCameraDiscovered(const PicamCameraID *id,
     int status;
     status = ADPICam_Instance->piHandleCameraDiscovery(id, device, action);
 
+    (void) status;                      // Ignore errors (?)
     return PicamError_None;
 }
 
@@ -2311,7 +2315,7 @@ asynStatus ADPICam::piHandleAcquisitionUpdated(
  */
 asynStatus ADPICam::piHandleCameraDiscovery(const PicamCameraID *id,
         PicamHandle device, PicamDiscoveryAction action) {
-    PicamError error = PicamError_None;
+    // PicamError error = PicamError_None;
     int status = asynSuccess;
     const char* modelString;
 
@@ -2537,7 +2541,7 @@ asynStatus ADPICam::piHandleParameterLargeIntegerValueChanged(
         PicamHandle camera,
         PicamParameter parameter,
         pi64s value) {
-    PicamError error = PicamError_None;
+    // PicamError error = PicamError_None;
     int status = asynSuccess;
     int driverParameter;
 
@@ -2578,7 +2582,6 @@ asynStatus ADPICam::piHandleParameterLargeIntegerValueChanged(
  */
 asynStatus ADPICam::piHandleParameterModulationsValueChanged(PicamHandle camera,
         PicamParameter parameter, const PicamModulations *value) {
-    PicamError error = PicamError_None;
     int status = asynSuccess;
 
     asynPrint(pasynUserSelf, ASYN_TRACE_FLOW, "%s:%s Enter\n", driverName,
@@ -2599,7 +2602,7 @@ asynStatus ADPICam::piHandleParameterModulationsValueChanged(PicamHandle camera,
  */
 asynStatus ADPICam::piHandleParameterPulseValueChanged(PicamHandle camera,
         PicamParameter parameter, const PicamPulse *value) {
-    PicamError error = PicamError_None;
+    // PicamError error = PicamError_None;
     int status = asynSuccess;
     asynPrint(pasynUserSelf, ASYN_TRACE_FLOW, "%s:%s Enter\n", driverName,
             __func__);
@@ -2618,7 +2621,6 @@ asynStatus ADPICam::piHandleParameterPulseValueChanged(PicamHandle camera,
  */
 asynStatus ADPICam::piHandleParameterRelevanceChanged(PicamHandle camera,
         PicamParameter parameter, pibln relevant) {
-    PicamError error = PicamError_None;
     int status = asynSuccess;
     PicamConstraintType constraintType;
     PicamValueType valueType;
@@ -2650,7 +2652,6 @@ asynStatus ADPICam::piHandleParameterRelevanceChanged(PicamHandle camera,
  */
 asynStatus ADPICam::piHandleParameterRoisValueChanged(PicamHandle camera,
         PicamParameter parameter, const PicamRois *value) {
-    PicamError error = PicamError_None;
     int status = asynSuccess;
     printf("parameter %s Rois value Changed\n",
             piParameterName(parameter).c_str());
@@ -4369,10 +4370,12 @@ void ADPICam::piHandleNewImageTask(void)
                         pibln overran;
                         error = PicamAdvanced_HasAcquisitionBufferOverrun(
                                 currentDeviceHandle, &overran);
-                        if (overran) {
-                            asynPrint(pasynUserSelf, ASYN_TRACE_ERROR,
-                                    "%s:%s Overrun in acquisition buffer",
-                                    driverName, __func__);
+                        if (error == PicamError_None) {
+                            if (overran) {
+                                asynPrint(pasynUserSelf, ASYN_TRACE_ERROR,
+                                        "%s:%s Overrun in acquisition buffer",
+                                        driverName, __func__);
+                            }
                         }
                         pImage = this->pArrays[0];
                         pImage->getInfo(&arrayInfo);
