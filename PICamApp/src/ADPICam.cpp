@@ -1832,23 +1832,29 @@ asynStatus ADPICam::piAddDemoCamera(const char *demoCameraName) {
                     "Trouble getting list of available Demo Cameras");
             return asynError;
         }
-        for (int ii = 0; ii < demoModelCount; ii++) {
-            std::string modelName = piModelName(demoModels[ii]);
-            if (strcmp(demoCameraName, modelName.c_str()) == 0) {
-                error = Picam_ConnectDemoCamera(demoModels[ii], "ADDemo",
-                        &demoID);
-                if (error == PicamError_None) {
-                    printf("%s:%s Adding camera demoCamera[%d] %s\n",
-                            driverName, __func__, demoModels[ii],
-                            demoCameraName);
-                    //ADPICam_Instance->piUpdateAvailableCamerasList();
-                } else {
-                    printf("%s:%s Error Adding camera demoCamera[%d] %s, %s\n",
-                            driverName, __func__, ii, demoCameraName,
-                            piErrorString(error).c_str());
-                    status = (asynStatus)asynError;
+        if (demoCameraName == NULL) {
+            printf("You must specify a camera model name:\n");
+            for (int ii = 0; ii < demoModelCount; ii++) {
+                    printf("%s\n", piModelName(demoModels[ii]).c_str());
+            }
+        } else {
+            for (int ii = 0; ii < demoModelCount; ii++) {
+                std::string modelName = piModelName(demoModels[ii]);
+                if (strcmp(demoCameraName, modelName.c_str()) == 0) {
+                    error = Picam_ConnectDemoCamera(demoModels[ii], "ADDemo",
+                            &demoID);
+                    if (error == PicamError_None) {
+                        printf("%s:%s Adding camera demoCamera[%d] %s\n",
+                                driverName, __func__, demoModels[ii],
+                                demoCameraName);
+                    } else {
+                        printf("%s:%s Error Adding camera demoCamera[%d] %s, %s\n",
+                                driverName, __func__, ii, demoCameraName,
+                                piErrorString(error).c_str());
+                        status = (asynStatus)asynError;
+                    }
+                    ii = demoModelCount;
                 }
-                ii = demoModelCount;
             }
         }
         Picam_DestroyModels(demoModels);
