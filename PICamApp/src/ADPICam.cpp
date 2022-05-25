@@ -1481,7 +1481,6 @@ asynStatus ADPICam::writeInt32(asynUser *pasynUser, epicsInt32 value) {
 
     if (function == PICAM_AvailableCameras) {
         status |= piSetSelectedCamera(pasynUser, (int) value);
-        status |= piSetParameterValuesFromSelectedCamera();
     } else if (function == PICAM_UnavailableCameras) {
         piSetSelectedUnavailableCamera(pasynUser, (int) value);
     } else if (piLookupPICamParameter(function, picamParameter) ==
@@ -3611,6 +3610,7 @@ asynStatus ADPICam::piSetSelectedCamera(asynUser *pasynUser,
     status |= piClearParameterRelevance();
     status |= piUpdateParameterExists();
     status |= piUpdateParameterRelevance();
+    status |= piSetParameterValuesFromSelectedCamera();
     status |= piRegisterRelevantWatch(currentCameraHandle);
 
     return (asynStatus) status;
