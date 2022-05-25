@@ -1385,55 +1385,57 @@ asynStatus ADPICam::writeFloat64(asynUser *pasynUser, epicsFloat64 value) {
 
     if (piLookupPICamParameter(function, picamParameter) ==
             PicamError_None){
-        pibln isRelevant;
-        error = Picam_IsParameterRelevant(currentCameraHandle,
-                picamParameter,
-                &isRelevant);
-        if (error == PicamError_ParameterDoesNotExist){
-            isRelevant = false;
-        }
-        else if (error != PicamError_None) {
-            piReportError(pasynUserSelf, __func__, error,
-                    "Trouble getting parameter associated with driver"
-                    " param %d, picam param:%d",
-                    function,
-                    picamParameter);
-            return asynError;
-        }
-        if (isRelevant && currentCameraHandle != NULL) {
-            PicamConstraintType constraintType;
-            error = Picam_GetParameterConstraintType(currentCameraHandle,
+        if (currentCameraHandle != NULL) {
+            pibln isRelevant;
+            error = Picam_IsParameterRelevant(currentCameraHandle,
                     picamParameter,
-                    &constraintType);
-            if (error != PicamError_None){
+                    &isRelevant);
+            if (error == PicamError_ParameterDoesNotExist){
+                isRelevant = false;
+            }
+            else if (error != PicamError_None) {
                 piReportError(pasynUserSelf, __func__, error,
-                        "Trouble getting constraint type assocoated with "
-                        "driver param %d, picam param:%d",
+                        "Trouble getting parameter associated with driver"
+                        " param %d, picam param:%d",
                         function,
                         picamParameter);
+                return asynError;
             }
-            if (constraintType==PicamConstraintType_Range) {
-                status |= piWriteFloat64RangeType(pasynUser,
-                        value,
-                        function,
-                        picamParameter);
-            }
-            else if (constraintType == PicamConstraintType_Collection) {
-                error = Picam_SetParameterFloatingPointValue(currentCameraHandle,
-                        picamParameter, (piflt) value);
-                if (error != PicamError_None) {
-                    piReportError(pasynUser, __func__, error,
-                            "error writing Float64 value to %f",
-                            value);
-                    return asynError;
-                }
-
-            }
-            else if (constraintType==PicamConstraintType_None) {
-                status |= Picam_SetParameterFloatingPointValue(
-                        currentCameraHandle,
+            if (isRelevant) {
+                PicamConstraintType constraintType;
+                error = Picam_GetParameterConstraintType(currentCameraHandle,
                         picamParameter,
-                        value);
+                        &constraintType);
+                if (error != PicamError_None){
+                    piReportError(pasynUserSelf, __func__, error,
+                            "Trouble getting constraint type assocoated with "
+                            "driver param %d, picam param:%d",
+                            function,
+                            picamParameter);
+                }
+                if (constraintType==PicamConstraintType_Range) {
+                    status |= piWriteFloat64RangeType(pasynUser,
+                            value,
+                            function,
+                            picamParameter);
+                }
+                else if (constraintType == PicamConstraintType_Collection) {
+                    error = Picam_SetParameterFloatingPointValue(currentCameraHandle,
+                            picamParameter, (piflt) value);
+                    if (error != PicamError_None) {
+                        piReportError(pasynUser, __func__, error,
+                                "error writing Float64 value to %f",
+                                value);
+                        return asynError;
+                    }
+
+                }
+                else if (constraintType==PicamConstraintType_None) {
+                    status |= Picam_SetParameterFloatingPointValue(
+                            currentCameraHandle,
+                            picamParameter,
+                            value);
+                }
             }
         }
     } else {
@@ -1484,47 +1486,49 @@ asynStatus ADPICam::writeInt32(asynUser *pasynUser, epicsInt32 value) {
         piSetSelectedUnavailableCamera(pasynUser, (int) value);
     } else if (piLookupPICamParameter(function, picamParameter) ==
             PicamError_None) {
-        pibln isRelevant;
-        error = Picam_IsParameterRelevant(currentCameraHandle,
-                picamParameter,
-                &isRelevant);
-        if (error == PicamError_ParameterDoesNotExist) {
-            isRelevant = false;
-        }
-        else if (error != PicamError_None) {
-            piReportError(pasynUserSelf, __func__, error,
-                    "Trouble getting parameter associated with driver"
-                    " param %d, picam param:%d",
-                    function,
-                    picamParameter);
-            return asynError;
-        }
-        if (isRelevant && currentCameraHandle != NULL){
-            PicamConstraintType constraintType;
-            error = Picam_GetParameterConstraintType(currentCameraHandle,
+        if(currentCameraHandle != NULL) {
+            pibln isRelevant;
+            error = Picam_IsParameterRelevant(currentCameraHandle,
                     picamParameter,
-                    &constraintType);
-            if (error != PicamError_None){
+                    &isRelevant);
+            if (error == PicamError_ParameterDoesNotExist) {
+                isRelevant = false;
+            }
+            else if (error != PicamError_None) {
                 piReportError(pasynUserSelf, __func__, error,
-                        "Trouble getting constraint type assocoated with "
-                        "driver param %d, picam param:%d",
+                        "Trouble getting parameter associated with driver"
+                        " param %d, picam param:%d",
                         function,
                         picamParameter);
                 return asynError;
             }
+            if (isRelevant){
+                PicamConstraintType constraintType;
+                error = Picam_GetParameterConstraintType(currentCameraHandle,
+                        picamParameter,
+                        &constraintType);
+                if (error != PicamError_None){
+                    piReportError(pasynUserSelf, __func__, error,
+                            "Trouble getting constraint type assocoated with "
+                            "driver param %d, picam param:%d",
+                            function,
+                            picamParameter);
+                    return asynError;
+                }
 
-            if (constraintType==PicamConstraintType_Range) {
-                status |= piWriteInt32RangeType(pasynUser,
-                        value,
-                        function,
-                        picamParameter);
+                if (constraintType==PicamConstraintType_Range) {
+                    status |= piWriteInt32RangeType(pasynUser,
+                            value,
+                            function,
+                            picamParameter);
 
-            }
-            else if (constraintType==PicamConstraintType_Collection) {
-                status |= piWriteInt32CollectionType(pasynUser,
-                        value,
-                        function,
-                        picamParameter);
+                }
+                else if (constraintType==PicamConstraintType_Collection) {
+                    status |= piWriteInt32CollectionType(pasynUser,
+                            value,
+                            function,
+                            picamParameter);
+                }
             }
         }
     }
