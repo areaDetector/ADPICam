@@ -927,6 +927,8 @@ ADPICam::ADPICam(const char *portName, int maxBuffers, size_t maxMemory,
                                 epicsThreadGetStackSize(epicsThreadStackMedium),
                                 (EPICSTHREADFUNC)piHandleNewImageTaskC,
                                 this) == NULL);
+
+    // Assocaite our callback with camera discovery and load SDK metadata
     initializeDetector();
 
     epicsAtExit(exitCallbackC, this);
@@ -2329,11 +2331,13 @@ asynStatus ADPICam::piHandleCameraDiscovery(const PicamCameraID *id,
     case PicamDiscoveryAction_Found:
         asynPrint(pasynUserSelf, ASYN_TRACE_FLOW, "Camera Found: %s\n",
                 piModelName(id->model).c_str());
+        // 'device' is set if this proccess has already discovered the camera
         if (device != NULL) {
             PicamHandle discoveredModel;
             PicamAdvanced_GetCameraModel(device, &discoveredModel);
             printf(" discovered %p, current, %p\n", discoveredModel,
                     currentCameraHandle);
+            // As long as the model matches the one we're looking for reconnect
             if (discoveredModel == currentCameraHandle) {
                 piSetSelectedCamera(pasynUserSelf, selectedCameraIndex);
             }
@@ -2362,6 +2366,8 @@ asynStatus ADPICam::piHandleCameraDiscovery(const PicamCameraID *id,
         asynPrint(pasynUserSelf, ASYN_TRACE_ERROR,
                 "Unexpected discovery action%d", action);
     }
+
+    // Log the discovered/disconnected camera
     if (device == NULL) {
         Picam_GetEnumerationString(PicamEnumeratedType_Model, id->model,
                 &modelString);

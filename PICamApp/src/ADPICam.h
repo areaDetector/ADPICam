@@ -223,6 +223,7 @@ protected:
     int PICAM_PixelWidth;
     int PICAM_SensorActiveBottomMargin;
 
+    //    Sensor active width and height delegated to ADMaxSizeX and ADMaxSizeY
     CCDMultiTrack PICAM_CCDMultiTrack;
     int PICAM_SensorActiveLeftMargin;
     int PICAM_SensorActiveRightMargin;
