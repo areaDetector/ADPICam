@@ -3268,6 +3268,10 @@ asynStatus ADPICam::piSetRois(asynUser *pasynUser) {
     const PicamRoisConstraint *roisConstraint;
     int numXPixels, minX, sizeX, binX;
 
+    if (currentCameraHandle == NULL) {
+        return asynSuccess;
+    }
+
     error = Picam_GetParameterRoisConstraint(currentCameraHandle,
             PicamParameter_Rois, PicamConstraintCategory_Required,
             &roisConstraint);
