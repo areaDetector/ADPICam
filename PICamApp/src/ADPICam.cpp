@@ -1415,9 +1415,13 @@ asynStatus ADPICam::writeFloat64(asynUser *pasynUser, epicsFloat64 value) {
                 __func__, status, function, value);
     }
     else {
+        int reason, address;
+        const char *paramName;
+        parseAsynUser(pasynUser, &reason, &address, &paramName);
+
         asynPrint(pasynUser, ASYN_TRACEIO_DRIVER,
-                "%s:%s: function=%d, value=%f\n", driverName, __func__,
-                function, value);
+                "%s:%s: function(%d)=%s, value=%f\n", driverName, __func__,
+                function, paramName, value);
         asynPrint(pasynUserSelf, ASYN_TRACE_FLOW, "%s:%s: exit\n", driverName,
                 __func__);
     }
@@ -1528,9 +1532,15 @@ asynStatus ADPICam::writeInt32(asynUser *pasynUser, epicsInt32 value) {
                 __func__, status, function, value);
     }
     else {
+        int reason, address;
+        const char *paramName;
+        parseAsynUser(pasynUser, &reason, &address, &paramName);
+
         asynPrint(pasynUser, ASYN_TRACEIO_DRIVER,
-                "%s:%s: function=%d, value=%d\n", driverName, __func__,
-                function, value);
+                "%s:%s: function(%d)=%s, value=%d\n", driverName, __func__,
+                function, paramName, value);
+        asynPrint(pasynUserSelf, ASYN_TRACE_FLOW, "%s:%s: exit\n", driverName,
+                __func__);
     }
 
     return (asynStatus) status;
@@ -1553,6 +1563,14 @@ asynStatus ADPICam::writeInt32Array(asynUser *pasynUser, epicsInt32 *value, size
             // Set ROIs based on tracks or simple region
             status = piSetRois(pasynUser);
         }
+
+        int reason, address;
+        const char *paramName;
+        parseAsynUser(pasynUser, &reason, &address, &paramName);
+
+        asynPrint(pasynUser, ASYN_TRACEIO_DRIVER,
+                "%s:%s: function(%d)=%s, value=%d\n", driverName, __func__,
+                pasynUser->reason, paramName, *value);
     }
     catch (const std::string &e) {
         asynPrint(pasynUserSelf, ASYN_TRACE_ERROR,
@@ -2065,10 +2083,11 @@ PicamError ADPICam::piLookupPICamParameter(int driverParameter,
         return PicamError_ParameterDoesNotExist;
     }
     asynPrint(pasynUserSelf, ASYN_TRACE_FLOW,
-            "%s:%s: driverParameter: %d, picamParam: %d\n",
+            "%s:%s: driverParameter(%d): %s, picamParam: %d\n",
             driverName,
             __func__,
             driverParameter,
+            piParameterName(parameter).c_str(),
             parameter);
     return PicamError_None;
 }
@@ -2633,7 +2652,7 @@ asynStatus ADPICam::piHandleParameterRelevanceChanged(PicamHandle camera,
 asynStatus ADPICam::piHandleParameterRoisValueChanged(PicamHandle camera,
         PicamParameter parameter, const PicamRois *value) {
     int status = asynSuccess;
-    printf("parameter %s Rois value Changed\n",
+    asynPrint(pasynUserSelf, ASYN_TRACE_FLOW, "parameter %s Rois value Changed\n",
             piParameterName(parameter).c_str());
     size_t dataHeight = 0;
     size_t dataWidth = 0;
@@ -3324,6 +3343,13 @@ asynStatus ADPICam::piSetRois(asynUser *pasynUser) {
             .y_binning = binY,
         };
         PicamRois rois = {.roi_array = &roi, .roi_count = 1,};
+
+        asynPrint(pasynUser, ASYN_TRACE_FLOW,
+            "%s:%s: Setting single ROI\n\tX: %d, %d, %d\n\tY: %d, %d ,%d\n",
+            driverName, __func__,
+            roi.x, roi.width, roi.x_binning,
+            roi.y, roi.height, roi.y_binning);
+
         error = Picam_SetParameterRoisValue(currentCameraHandle,
                 PicamParameter_Rois, &rois);
         if (error != PicamError_None) {
