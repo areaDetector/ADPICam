@@ -3600,10 +3600,6 @@ asynStatus ADPICam::piSetSelectedCamera(asynUser *pasynUser,
 
     }
 
-    callParamCallbacks();
-
-    status |= piRegisterValueChangeWatch(currentCameraHandle);
-
     /* Do callbacks so higher layers see any changes */
     callParamCallbacks();
 
@@ -3613,6 +3609,8 @@ asynStatus ADPICam::piSetSelectedCamera(asynUser *pasynUser,
     status |= piUpdateParameterRelevance();
     status |= piSetParameterValuesFromSelectedCamera();
     status |= piRegisterRelevantWatch(currentCameraHandle);
+    status |= piRegisterValueChangeWatch(currentCameraHandle);
+    callParamCallbacks();
 
     return (asynStatus) status;
 }
