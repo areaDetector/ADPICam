@@ -144,7 +144,6 @@ ADPICam::ADPICam(const char *portName, int maxBuffers, size_t maxMemory,
     int status = asynSuccess;
     const char *emptyStr = "";
     pibln libInitialized;
-    PicamCameraID demoId;
     PicamError error = PicamError_None;
     int enableDisplay = 1;
 
