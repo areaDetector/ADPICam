@@ -1537,8 +1537,8 @@ asynStatus ADPICam::writeInt32(asynUser *pasynUser, epicsInt32 value) {
         parseAsynUser(pasynUser, &reason, &address, &paramName);
 
         asynPrint(pasynUser, ASYN_TRACEIO_DRIVER,
-                "%s:%s: function(%d)=%s, value=%d\n", driverName, __func__,
-                function, paramName, value);
+                "%s:%s: %s(%d) = %d\n", driverName, __func__,
+                paramName, function, value);
         asynPrint(pasynUserSelf, ASYN_TRACE_FLOW, "%s:%s: exit\n", driverName,
                 __func__);
     }
@@ -2149,6 +2149,12 @@ asynStatus ADPICam::piGenerateListValuesFromCollection(
                             picamParam);
                     return asynError;
                 }
+                asynPrint(pasynUserSelf, ASYN_TRACE_FLOW,
+                        "%s:%s: Found %d constraint values for parameter %d\n",
+                        driverName,
+                        __func__,
+                        constraints->values_count,
+                        picamParam);
                 if ( constraints->values_count == 0){
                     strings[0] = epicsStrDup(NAString);
                     values[0] = 0;
