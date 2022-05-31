@@ -2481,38 +2481,7 @@ asynStatus ADPICam::piHandleParameterIntegerValueChanged(PicamHandle camera,
                 "value %d\n",
                 driverName, __func__, parameterName.c_str(), driverParameter,
                 value);
-        PicamConstraintType paramCT;
-        error = Picam_GetParameterConstraintType(currentCameraHandle, parameter,
-                &paramCT);
-        if (error != PicamError_None) {
-            piReportError(pasynUserSelf, __func__, error,
-                    "Trouble determining constraint type for parameter %s",
-                    parameterName.c_str());
-        }
-        switch (paramCT) {
-        case PicamConstraintType_Collection:
-            const PicamCollectionConstraint *constraint;
-            error = Picam_GetParameterCollectionConstraint(
-                    currentCameraHandle,
-                    parameter,
-                    PicamConstraintCategory_Capable,
-                    &constraint);
-            if (error != PicamError_None) {
-                piReportError(pasynUserSelf, __func__, error,
-                        "Error getting constraint for "
-                        "parameter %s",
-                        parameterName.c_str());
-            }
-            for (int iParam = 0; iParam < constraint->values_count;
-                    iParam++) {
-                if (constraint->values_array[iParam] == value) {
-                    setIntegerParam(driverParameter, iParam);
-                }
-            }
-            break;
-        default:
-            status = setIntegerParam(driverParameter, value);
-        }
+        status = setIntegerParam(driverParameter, value);
     } else {
         // Pass along to method that lets you know that a parameter change is
         // about to fall on the ground unhandled.
