@@ -1820,7 +1820,7 @@ asynStatus ADPICam::piAddDemoCamera(const char *demoCameraName) {
             for (int ii = 0; ii < demoModelCount; ii++) {
                 std::string modelName = piModelName(demoModels[ii]);
                 if (strcmp(demoCameraName, modelName.c_str()) == 0) {
-                    error = Picam_ConnectDemoCamera(demoModels[ii], "ADDemo",
+                    error = Picam_ConnectDemoCamera(demoModels[ii], modelName.c_str(),
                             &demoID);
                     if (error == PicamError_None) {
                         printf("%s:%s Adding camera demoCamera[%d] %s\n",
