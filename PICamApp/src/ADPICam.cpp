@@ -1001,7 +1001,7 @@ asynStatus ADPICam::readEnum(asynUser *pasynUser, char *strings[], int values[],
                 free(strings[*nIn]);
             }
 
-            strings[*nIn] = epicsStrDup(modelName.c_str());
+            strings[*nIn] = epicsStrDup(availableCameraIDs[ii].serial_number);
             values[*nIn] = ii;
             severities[*nIn] = 0;
             (*nIn)++;
