@@ -5,6 +5,7 @@ include $(TOP)/configure/CONFIG
 
 PROD_NAME = PICamApp
 PROD_IOC_WIN32 += $(PROD_NAME)
+PROD_IOC_Linux += $(PROD_NAME)
 
 # <name>.dbd will be created from <name>Include.dbd
 DBD += $(PROD_NAME).dbd
@@ -15,7 +16,20 @@ $(PROD_NAME)_SRCS += $(PROD_NAME)_registerRecordDeviceDriver.cpp $(PROD_NAME)Mai
 
 # Add locally compiled object code
 $(PROD_NAME)_LIBS += ADPICam
+
+ifeq (win32-x86, $(findstring win32-x86, $(T_A)))
+$(PROD_NAME)_LIBS += Picam32
+else ifeq (windows-x64, $(findstring windows-x64, $(T_A)))
 $(PROD_NAME)_LIBS += Picam
+else
+$(PROD_NAME)_SYS_LIBS += picam piac picc pida pidi
+endif
+
+ifeq (mingw, $(findstring mingw, $(T_A)))
+  # static build only, multiple definition of pthread_create, pthread_cond_init, etc on Linux.
+  # I don't know how to fix it.
+  USR_LDFLAGS += -Wl,-allow-multiple-definition
+endif
 
 include $(ADCORE)/ADApp/commonDriverMakefile
 

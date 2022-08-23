@@ -4,6 +4,5 @@
 
 ADPICAM=$(TOP)/../..
 
--include $(TOP)/../../../configure/RELEASE_PRODS_INCLUDE
--include $(TOP)/RELEASE.local
--include $(TOP)/configure/RELEASE.local
+-include $(ADPICAM)/RELEASE.local
+-include $(ADPICAM)/configure/RELEASE.local

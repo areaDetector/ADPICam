@@ -1,0 +1,495 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <TrackFileAccess>false</TrackFileAccess>
+  </PropertyGroup>
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug_DLL|Win32">
+      <Configuration>Debug_DLL</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug_DLL|x64">
+      <Configuration>Debug_DLL</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug_LIB|Win32">
+      <Configuration>Debug_LIB</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug_LIB|x64">
+      <Configuration>Debug_LIB</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release_DLL|Win32">
+      <Configuration>Release_DLL</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release_DLL|x64">
+      <Configuration>Release_DLL</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release_LIB|Win32">
+      <Configuration>Release_LIB</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release_LIB|x64">
+      <Configuration>Release_LIB</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\iocBoot\iocPICam\auto_settings.req" />
+    <None Include="..\iocBoot\iocPICam\st.cmd" />
+    <None Include="..\iocBoot\iocPICam\start_epics-debug.bat" />
+    <None Include="..\iocBoot\iocPICam\start_epics-displays.bat" />
+    <None Include="..\iocBoot\iocPICam\start_epics.bat" />
+    <None Include="src\Makefile" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="O.Common\PICamWithActonApp_registerRecordDeviceDriver.cpp" />
+    <ClCompile Include="src\PICamWithActonAppMain.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\..\..\..\base-7.0.6.1\modules\ca\src\client\ca.vcxproj">
+      <Project>{361bcebd-8b02-4b15-b28b-863f0602cb99}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\..\..\base-7.0.6.1\modules\database\src\ioc\dbCore.vcxproj">
+      <Project>{422a8c73-836c-48cb-86c8-0591e69c0ca1}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\..\..\base-7.0.6.1\modules\database\src\std\dbRecStd.vcxproj">
+      <Project>{9cf8d9ab-e47d-4923-a251-80e40b4e7144}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\..\..\base-7.0.6.1\modules\database\src\std\softIoc\softIoc.vcxproj">
+      <Project>{ce14b4d8-c63f-4ea6-9de4-cace48ea092c}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\..\..\base-7.0.6.1\modules\libcom\src\Com.vcxproj">
+      <Project>{e9d99fc7-e592-472b-b2e2-c3b0d81d8169}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\..\..\base-7.0.6.1\modules\pva2pva\pdbApp\qsrv.vcxproj">
+      <Project>{589ab311-372d-4fa2-a3e3-00d530d8c0a8}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\..\..\base-7.0.6.1\modules\pvAccess\src\pvAccess.vcxproj">
+      <Project>{44ecea7e-d805-49b6-8e89-62ec3994c1f3}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\..\..\iocTops\PrincetonSpectro\ARC_InstrumentApp\src\ARC_InstrumentDev.vcxproj">
+      <Project>{20186f2c-f4f9-489b-9936-0091d9c4ad79}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\..\asyn-R4-40-1\asyn\asyn.vcxproj">
+      <Project>{c3ea0ff7-6039-4884-ba91-7b4619befea5}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\..\autosave\asApp\src\autosave.vcxproj">
+      <Project>{ec5c161c-4177-49bd-bd1f-2ba6a05f03d4}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\..\busy\busyApp\src\busy.vcxproj">
+      <Project>{98d6b430-c1e3-47d6-aecb-846a7ee2d938}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\..\calc\calcApp\src\calc.vcxproj">
+      <Project>{704a182e-faea-4e59-b5f4-9dc799f4556a}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\..\sscan\sscanApp\src\sscan.vcxproj">
+      <Project>{bc5f994e-1bfe-4c94-bf8d-86077ef84ed7}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\ADCore\ADApp\ADSrc\ADBase.vcxproj">
+      <Project>{77cbc12c-ae16-40ef-a286-a61535f45a99}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\ADCore\ADApp\pluginSrc\NDPlugin.vcxproj">
+      <Project>{98dff6ea-747c-4964-a11f-7abb34b314f4}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\ADSupport\supportApp\hdf5Src\hdf5.vcxproj">
+      <Project>{a1c1777e-50d2-47dc-91bb-3b328362214a}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\ADSupport\supportApp\netCDFSrc\netCDF.vcxproj">
+      <Project>{39a57a7c-0399-40d5-bf95-2940fc941e4d}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\ADSupport\supportApp\nexusSrc\NeXus.vcxproj">
+      <Project>{575a12dd-9181-465b-b0e1-c3bf5b3d9171}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\ADSupport\supportApp\szipSrc\szip.vcxproj">
+      <Project>{c9c70b97-bfaf-412c-887a-5b1e19181433}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\PICamApp\ADPICam.vcxproj">
+      <Project>{a07a2021-121c-4c5c-8aef-49e8006ff4b0}</Project>
+    </ProjectReference>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{9876C3BC-3B42-4ADD-B023-F301BA92D966}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <RootNamespace>WithAsyn</RootNamespace>
+    <SccProjectName>Svn</SccProjectName>
+    <SccLocalPath>Svn</SccLocalPath>
+    <SccProvider>SubversionScc</SccProvider>
+    <SccAuxPath>Svn</SccAuxPath>
+    <ProjectName>PICamWithActonApp</ProjectName>
+    <WindowsTargetPlatformVersion>10.0.17763.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_DLL|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v141</PlatformToolset>
+    <SpectreMitigation>false</SpectreMitigation>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_DLL|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v141</PlatformToolset>
+    <SpectreMitigation>false</SpectreMitigation>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_LIB|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v141</PlatformToolset>
+    <SpectreMitigation>false</SpectreMitigation>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_LIB|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v141</PlatformToolset>
+    <SpectreMitigation>false</SpectreMitigation>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_DLL|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <PlatformToolset>v141</PlatformToolset>
+    <SpectreMitigation>false</SpectreMitigation>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_DLL|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <PlatformToolset>v141</PlatformToolset>
+    <SpectreMitigation>false</SpectreMitigation>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_LIB|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <PlatformToolset>v141</PlatformToolset>
+    <SpectreMitigation>false</SpectreMitigation>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_LIB|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <PlatformToolset>v141</PlatformToolset>
+    <SpectreMitigation>false</SpectreMitigation>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug_DLL|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug_DLL|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug_LIB|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug_LIB|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release_DLL|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release_DLL|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release_LIB|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release_LIB|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_DLL|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_DLL|x64'">
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_LIB|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_LIB|x64'">
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_DLL|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_DLL|x64'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_LIB|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_LIB|x64'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug_DLL|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WIN32;_DEBUG;EPICS_CALL_DLL;EPICS_BUILD_DLL;_CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\..\ADSupport\supportApp\xml2Src\os\default;$(SolutionDir)include;$(SolutionDir)include\os\win32;$(SolutionDir)include\compiler\msvc</AdditionalIncludeDirectories>
+      <TreatWarningAsError>true</TreatWarningAsError>
+      <DisableSpecificWarnings>4251;4275</DisableSpecificWarnings>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>
+      </AdditionalLibraryDirectories>
+    </Link>
+    <PreBuildEvent />
+    <PostBuildEvent />
+    <PostBuildEvent />
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug_DLL|x64'">
+    <ClCompile>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WIN32;_DEBUG;EPICS_CALL_DLL;EPICS_BUILD_DLL;_CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\..\ADSupport\supportApp\xml2Src\os\default;$(SolutionDir)include;$(SolutionDir)include\os\win32;$(SolutionDir)include\compiler\msvc</AdditionalIncludeDirectories>
+      <TreatWarningAsError>true</TreatWarningAsError>
+      <DisableSpecificWarnings>4251</DisableSpecificWarnings>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>
+      </AdditionalLibraryDirectories>
+    </Link>
+    <PreBuildEvent />
+    <PostBuildEvent />
+    <PostBuildEvent />
+    <PreBuildEvent>
+      <Command>if not exist O.Common md O.Common
+if not exist $(SolutionDir)DBD md $(SolutionDir)DBD
+SET PERL5LIB=$(SolutionDir)lib\perl
+perl -CSD $(OutDir)dbdExpand.pl  -o ../../../PICamApp/O.Common/PICamWithActonApp.dbd -I$(SolutionDir)dbd ..\..\..\..\..\..\iocTops\PrincetonSpectro\ARC_InstrumentApp\src\ARC_InstrumentInclude.dbd ..\..\..\PICamApp\src\PICamSupport.dbd base.dbd ADSupport.dbd NDPluginSupport.dbd NDFileNull.dbd NDFileNetCDF.dbd NDFileTIFF.dbd NDFileJPEG.dbd NDFileNexus.dbd NDFileHDF5.dbd NDFileMagick.dbd asyn.dbd asSupport.dbd busySupport.dbd calcSupport.dbd sscanSupport.dbd
+copy ..\..\..\PICamApp\O.Common\PICamWithActonApp.dbd $(SolutionDir)dbd
+perl -CSD $(OutDir)registerRecordDeviceDriver.pl  -I$(SolutionDir)dbd  -o  O.Common\PICamWithActonApp_registerRecordDeviceDriver.cpp $(SolutionDir)DBD\PICamWithActonApp.dbd  PICamWithActonApp_registerRecordDeviceDriver  $(SolutionDir)
+</Command>
+    </PreBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug_LIB|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\..\ADSupport\supportApp\xml2Src\os\default;$(SolutionDir)include;$(SolutionDir)include\os\win32;$(SolutionDir)include\compiler\msvc</AdditionalIncludeDirectories>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <TreatWarningAsError>true</TreatWarningAsError>
+      <DisableSpecificWarnings>4251;4275</DisableSpecificWarnings>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;ws2_32.lib</AdditionalDependencies>
+    </Link>
+    <PreBuildEvent />
+    <PostBuildEvent />
+    <PostBuildEvent />
+    <PreBuildEvent>
+      <Command>if not exist O.Common md O.Common
+if not exist $(SolutionDir)DBD md $(SolutionDir)DBD
+SET PERL5LIB=$(SolutionDir)lib\perl
+perl -CSD $(OutDir)dbdExpand.pl  -o ../../../PICamApp/O.Common/PICamWithActonApp.dbd -I$(SolutionDir)dbd ..\..\..\..\..\..\iocTops\PrincetonSpectro\ARC_InstrumentApp\src\ARC_InstrumentInclude.dbd ..\..\..\PICamApp\src\PICamSupport.dbd base.dbd ADSupport.dbd NDPluginSupport.dbd NDFileNull.dbd NDFileNetCDF.dbd NDFileTIFF.dbd NDFileJPEG.dbd NDFileNexus.dbd NDFileHDF5.dbd NDFileMagick.dbd asyn.dbd asSupport.dbd busySupport.dbd calcSupport.dbd sscanSupport.dbd
+copy ..\..\..\PICamApp\O.Common\PICamWithActonApp.dbd $(SolutionDir)dbd
+perl -CSD $(OutDir)registerRecordDeviceDriver.pl  -I$(SolutionDir)dbd  -o  O.Common\PICamWithActonApp_registerRecordDeviceDriver.cpp $(SolutionDir)DBD\PICamWithActonApp.dbd  PICamWithActonApp_registerRecordDeviceDriver  $(SolutionDir)
+</Command>
+    </PreBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug_LIB|x64'">
+    <ClCompile>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\..\ADSupport\supportApp\xml2Src\os\default;$(SolutionDir)include;$(SolutionDir)include\os\win32;$(SolutionDir)include\compiler\msvc</AdditionalIncludeDirectories>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <TreatWarningAsError>true</TreatWarningAsError>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;ws2_32.lib</AdditionalDependencies>
+    </Link>
+    <PreBuildEvent />
+    <PostBuildEvent />
+    <PostBuildEvent />
+    <PreBuildEvent>
+      <Command>if not exist O.Common md O.Common
+if not exist $(SolutionDir)DBD md $(SolutionDir)DBD
+SET PERL5LIB=$(SolutionDir)lib\perl
+perl -CSD $(OutDir)dbdExpand.pl  -o ../../../PICamApp/O.Common/PICamWithActonApp.dbd -I$(SolutionDir)dbd ..\..\..\..\..\..\iocTops\PrincetonSpectro\ARC_InstrumentApp\src\ARC_InstrumentInclude.dbd ..\..\..\PICamApp\src\PICamSupport.dbd base.dbd ADSupport.dbd NDPluginSupport.dbd NDFileNull.dbd NDFileNetCDF.dbd NDFileTIFF.dbd NDFileJPEG.dbd NDFileNexus.dbd NDFileHDF5.dbd NDFileMagick.dbd asyn.dbd asSupport.dbd busySupport.dbd calcSupport.dbd sscanSupport.dbd
+copy ..\..\..\PICamApp\O.Common\PICamWithActonApp.dbd $(SolutionDir)dbd
+perl -CSD $(OutDir)registerRecordDeviceDriver.pl  -I$(SolutionDir)dbd  -o  O.Common\PICamWithActonApp_registerRecordDeviceDriver.cpp $(SolutionDir)DBD\PICamWithActonApp.dbd  PICamWithActonApp_registerRecordDeviceDriver  $(SolutionDir)
+</Command>
+    </PreBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release_DLL|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;EPICS_CALL_DLL;EPICS_BUILD_DLL;_CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\..\ADSupport\supportApp\xml2Src\os\default;$(SolutionDir)include;$(SolutionDir)include\os\win32;$(SolutionDir)include\compiler\msvc</AdditionalIncludeDirectories>
+      <TreatWarningAsError>true</TreatWarningAsError>
+      <DisableSpecificWarnings>4251;4275</DisableSpecificWarnings>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+    </Link>
+    <PreBuildEvent />
+    <PostBuildEvent />
+    <PostBuildEvent />
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release_DLL|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;EPICS_CALL_DLL;EPICS_BUILD_DLL;_CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\..\ADSupport\supportApp\xml2Src\os\default;$(SolutionDir)include;$(SolutionDir)include\os\win32;$(SolutionDir)include\compiler\msvc</AdditionalIncludeDirectories>
+      <TreatWarningAsError>true</TreatWarningAsError>
+      <DisableSpecificWarnings>4251</DisableSpecificWarnings>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+    </Link>
+    <PreBuildEvent />
+    <PostBuildEvent />
+    <PostBuildEvent />
+    <PreBuildEvent>
+      <Command>if not exist O.Common md O.Common
+if not exist $(SolutionDir)DBD md $(SolutionDir)DBD
+SET PERL5LIB=$(SolutionDir)lib\perl
+perl -CSD $(OutDir)dbdExpand.pl  -o ../../../PICamApp/O.Common/PICamWithActonApp.dbd -I$(SolutionDir)dbd ..\..\..\..\..\..\iocTops\PrincetonSpectro\ARC_InstrumentApp\src\ARC_InstrumentInclude.dbd ..\..\..\PICamApp\src\PICamSupport.dbd base.dbd ADSupport.dbd NDPluginSupport.dbd NDFileNull.dbd NDFileNetCDF.dbd NDFileTIFF.dbd NDFileJPEG.dbd NDFileNexus.dbd NDFileHDF5.dbd NDFileMagick.dbd asyn.dbd asSupport.dbd busySupport.dbd calcSupport.dbd sscanSupport.dbd
+copy ..\..\..\PICamApp\O.Common\PICamWithActonApp.dbd $(SolutionDir)dbd
+perl -CSD $(OutDir)registerRecordDeviceDriver.pl  -I$(SolutionDir)dbd  -o  O.Common\PICamWithActonApp_registerRecordDeviceDriver.cpp $(SolutionDir)DBD\PICamWithActonApp.dbd  PICamWithActonApp_registerRecordDeviceDriver  $(SolutionDir)
+</Command>
+    </PreBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release_LIB|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\..\ADSupport\supportApp\xml2Src\os\default;$(SolutionDir)include;$(SolutionDir)include\os\win32;$(SolutionDir)include\compiler\msvc</AdditionalIncludeDirectories>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <TreatWarningAsError>true</TreatWarningAsError>
+      <DisableSpecificWarnings>4251;4275</DisableSpecificWarnings>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;ws2_32.lib</AdditionalDependencies>
+    </Link>
+    <PreBuildEvent />
+    <PostBuildEvent />
+    <PostBuildEvent />
+    <PreBuildEvent>
+      <Command>if not exist O.Common md O.Common
+if not exist $(SolutionDir)DBD md $(SolutionDir)DBD
+SET PERL5LIB=$(SolutionDir)lib\perl
+perl -CSD $(OutDir)dbdExpand.pl  -o ../../../PICamApp/O.Common/PICamWithActonApp.dbd -I$(SolutionDir)dbd ..\..\..\..\..\..\iocTops\PrincetonSpectro\ARC_InstrumentApp\src\ARC_InstrumentInclude.dbd ..\..\..\PICamApp\src\PICamSupport.dbd base.dbd ADSupport.dbd NDPluginSupport.dbd NDFileNull.dbd NDFileNetCDF.dbd NDFileTIFF.dbd NDFileJPEG.dbd NDFileNexus.dbd NDFileHDF5.dbd NDFileMagick.dbd asyn.dbd asSupport.dbd busySupport.dbd calcSupport.dbd sscanSupport.dbd
+copy ..\..\..\PICamApp\O.Common\PICamWithActonApp.dbd $(SolutionDir)dbd
+perl -CSD $(OutDir)registerRecordDeviceDriver.pl  -I$(SolutionDir)dbd  -o  O.Common\PICamWithActonApp_registerRecordDeviceDriver.cpp $(SolutionDir)DBD\PICamWithActonApp.dbd  PICamWithActonApp_registerRecordDeviceDriver  $(SolutionDir)
+</Command>
+    </PreBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release_LIB|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\..\ADSupport\supportApp\xml2Src\os\default;$(SolutionDir)include;$(SolutionDir)include\os\win32;$(SolutionDir)include\compiler\msvc</AdditionalIncludeDirectories>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <TreatWarningAsError>true</TreatWarningAsError>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;ws2_32.lib</AdditionalDependencies>
+    </Link>
+    <PreBuildEvent />
+    <PostBuildEvent />
+    <PostBuildEvent />
+    <PreBuildEvent>
+      <Command>if not exist O.Common md O.Common
+if not exist $(SolutionDir)DBD md $(SolutionDir)DBD
+SET PERL5LIB=$(SolutionDir)lib\perl
+perl -CSD $(OutDir)dbdExpand.pl  -o ../../../PICamApp/O.Common/PICamWithActonApp.dbd -I$(SolutionDir)dbd ..\..\..\..\..\..\iocTops\PrincetonSpectro\ARC_InstrumentApp\src\ARC_InstrumentInclude.dbd ..\..\..\PICamApp\src\PICamSupport.dbd base.dbd ADSupport.dbd NDPluginSupport.dbd NDFileNull.dbd NDFileNetCDF.dbd NDFileTIFF.dbd NDFileJPEG.dbd NDFileNexus.dbd NDFileHDF5.dbd NDFileMagick.dbd asyn.dbd asSupport.dbd busySupport.dbd calcSupport.dbd sscanSupport.dbd
+copy ..\..\..\PICamApp\O.Common\PICamWithActonApp.dbd $(SolutionDir)dbd
+perl -CSD $(OutDir)registerRecordDeviceDriver.pl  -I$(SolutionDir)dbd  -o  O.Common\PICamWithActonApp_registerRecordDeviceDriver.cpp $(SolutionDir)DBD\PICamWithActonApp.dbd  PICamWithActonApp_registerRecordDeviceDriver  $(SolutionDir)
+</Command>
+    </PreBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release_DLL|Win32'">
+    <ClCompile>
+      <PreprocessorDefinitions>WIN32;NDEBUG;EPICS_CALL_DLL;EPICS_BUILD_DLL;_CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(SolutionDir)include;$(SolutionDir)include\os\win32;$(SolutionDir)include\compiler\msvc</AdditionalIncludeDirectories>
+    </ClCompile>
+    <PreBuildEvent>
+      <Command>if not exist O.Common md O.Common
+if not exist $(SolutionDir)DBD md $(SolutionDir)DBD
+SET PERL5LIB=$(SolutionDir)lib\perl
+perl -CSD $(OutDir)dbdExpand.pl  -o ../../../PICamApp/O.Common/PICamWithActonApp.dbd -I$(SolutionDir)dbd ..\..\..\..\..\..\iocTops\PrincetonSpectro\ARC_InstrumentApp\src\ARC_InstrumentInclude.dbd ..\..\..\PICamApp\src\PICamSupport.dbd base.dbd ADSupport.dbd NDPluginSupport.dbd NDFileNull.dbd NDFileNetCDF.dbd NDFileTIFF.dbd NDFileJPEG.dbd NDFileNexus.dbd NDFileHDF5.dbd NDFileMagick.dbd asyn.dbd asSupport.dbd busySupport.dbd calcSupport.dbd sscanSupport.dbd
+copy ..\..\..\PICamApp\O.Common\PICamWithActonApp.dbd $(SolutionDir)dbd
+perl -CSD $(OutDir)registerRecordDeviceDriver.pl  -I$(SolutionDir)dbd  -o  O.Common\PICamWithActonApp_registerRecordDeviceDriver.cpp $(SolutionDir)DBD\PICamWithActonApp.dbd  PICamWithActonApp_registerRecordDeviceDriver  $(SolutionDir)
+</Command>
+    </PreBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug_DLL|Win32'">
+    <ClCompile>
+      <PreprocessorDefinitions>WIN32;_DEBUG;EPICS_CALL_DLL;EPICS_BUILD_DLL;_CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(SolutionDir)include;$(SolutionDir)include\os\win32;$(SolutionDir)include\compiler\msvc</AdditionalIncludeDirectories>
+    </ClCompile>
+    <PreBuildEvent>
+      <Command>if not exist O.Common md O.Common
+if not exist $(SolutionDir)DBD md $(SolutionDir)DBD
+SET PERL5LIB=$(SolutionDir)lib\perl
+perl -CSD $(OutDir)dbdExpand.pl  -o ../../../PICamApp/O.Common/PICamWithActonApp.dbd -I$(SolutionDir)dbd ..\..\..\..\..\..\iocTops\PrincetonSpectro\ARC_InstrumentApp\src\ARC_InstrumentInclude.dbd ..\..\..\PICamApp\src\PICamSupport.dbd base.dbd ADSupport.dbd NDPluginSupport.dbd NDFileNull.dbd NDFileNetCDF.dbd NDFileTIFF.dbd NDFileJPEG.dbd NDFileNexus.dbd NDFileHDF5.dbd NDFileMagick.dbd asyn.dbd asSupport.dbd busySupport.dbd calcSupport.dbd sscanSupport.dbd
+copy ..\..\..\PICamApp\O.Common\PICamWithActonApp.dbd $(SolutionDir)dbd
+perl -CSD $(OutDir)registerRecordDeviceDriver.pl  -I$(SolutionDir)dbd  -o  O.Common\PICamWithActonApp_registerRecordDeviceDriver.cpp $(SolutionDir)DBD\PICamWithActonApp.dbd  PICamWithActonApp_registerRecordDeviceDriver  $(SolutionDir)
+</Command>
+    </PreBuildEvent>
+  </ItemDefinitionGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

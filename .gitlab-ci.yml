@@ -1,0 +1,107 @@
+# .gitlab-ci.yml for testing EPICS Base ci-scripts
+# (see: https://github.com/epics-base/ci-scripts)
+
+# This is YAML - indentation levels are crucial
+
+# GitLab runner can use any Docker container, we're using this one
+# to be comparable with the other CI services
+image: ubuntu:focal
+
+cache:
+  key: "$CI_JOB_NAME-$CI_COMMIT_REF_SLUG"
+  paths:
+    - .cache/
+
+variables:
+  DEBIAN_FRONTEND: noninteractive
+  GIT_SUBMODULE_STRATEGY: "recursive"
+  SETUP_PATH: ".ci-local:.ci"
+  BASE_RECURSIVE: "YES"
+  # Additional packages needed for
+  #     |   EPICS                            |clang|   Windows cross builds                |RTEMS testing  |sequencer
+  APT: "libreadline6-dev libncurses5-dev perl clang g++-mingw-w64-i686 g++-mingw-w64-x86-64 qemu-system-x86 re2c"
+  CMP: "gcc"
+  BGFC: "default"
+  SET: stable
+  CLEAN_DEPS: "NO"
+
+# Template for build jobs (hidden)
+.build:
+  stage: build
+  before_script:
+    - apt-get update -qq && apt-get install -y -qq build-essential git python curl p7zip-full libgtest-dev libxml2-dev libx11-dev libxext-dev
+    - python .ci/cue.py prepare
+  script:
+    - python .ci/cue.py build
+    - python .ci/cue.py test
+    - python .ci/cue.py test-results
+
+# If you need to do more during install and build,
+# add a local directory to your module and do e.g.
+#  - ./.ci-local/travis/install-extras.sh
+
+# Define build jobs
+
+# Well-known variables to use
+# SET         source setup file
+# ADD_MODULES extra modules (for a specific job)
+# BCFG        build configuration (static/debug/static-debug;
+#             default: shared-optimized)
+# TEST        set to NO to skip running the tests (default: YES)
+# VV          set to make build scripts verbose (default: unset)
+# EXTRA       content will be added to make command line
+# EXTRA1..5   more additional arguments for the make command
+#             (one argument per variable)
+
+# Usually from setup files, but may be specified or overridden
+#  on a job line
+# MODULES     list of dependency modules
+# BASE        branch or release tag name of the EPICS Base to use
+# <MODULE>    branch or release tag for a specific module
+# ...         see README for setup file syntax description
+
+# Different configurations of gcc and clang
+gcc_default:
+  extends: .build
+  variables:
+
+gcc_static:
+  extends: .build
+  variables:
+    BCFG: "static"
+
+clang_default:
+  extends: .build
+  variables:
+    CMP: "clang"
+
+clang_static_c++11:
+  extends: .build
+  variables:
+    CMP: "clang"
+    BCFG: "static"
+    EXTRA: "CMD_CXXFLAGS=-std=c++11"
+
+# Cross-compilations to Windows using gcc/MinGW and WINE
+wine32_default:
+  extends: .build
+  variables:
+    WINE: "32"
+
+wine64_default:
+  extends: .build
+  variables:
+    WINE: "64"
+
+wine64_debug:
+  extends: .build
+  variables:
+    WINE: "64"
+    BCFG: "debug"
+    
+wine64_static:
+  extends: .build
+  variables:
+    WINE: "64"
+    BCFG: "static"
+

@@ -21,7 +21,7 @@
 #include <epicsString.h>
 #include <epicsEvent.h>
 #include <epicsThread.h>
-
+#include <CCDMultiTrack.h>
 
 #include "picam_advanced.h"
 
@@ -32,7 +32,7 @@ public:
     static const char *driverName;
 
     ADPICam(const char *portName, int maxBuffers, size_t maxMemory,
-            int priority, int stackSize);
+            int priority, int stackSize, int selectedCamera);
     ~ADPICam();
     /* These are the methods that we override from ADDriver */
     virtual asynStatus readEnum(asynUser *pasynUser, char *strings[],
@@ -99,10 +99,11 @@ public:
     void piHandleNewImageTask(void);
     void report(FILE *fp, int details);
     virtual asynStatus writeInt32(asynUser *pasynUser, epicsInt32 value);
+    virtual asynStatus writeInt32Array(asynUser *pasynUser, epicsInt32 *value, size_t nElements);
     virtual asynStatus writeFloat64(asynUser *pasynUser, epicsFloat64 value);
     virtual asynStatus readOctet(asynUser *pasynUser, char *value,
                                         size_t nChars, size_t *nActual,
-										int *eomReason);
+                                        int *eomReason);
 protected:
 
     int PICAM_VersionNumber;
@@ -120,9 +121,7 @@ protected:
     int PICAM_FirmwareRevisionUnavailable;
 
     //Shutter Timing
-    int PICAM_ShutterClosingDelay;
     int PICAM_ShutterDelayResolution;
-    int PICAM_ShutterOpeningDelay;
     int PICAM_ShutterTimingMode;
 
     // Intensifier
@@ -222,6 +221,8 @@ protected:
     int PICAM_PixelHeight;
     int PICAM_PixelWidth;
     int PICAM_SensorActiveBottomMargin;
+
+    CCDMultiTrack PICAM_CCDMultiTrack;
 //    int PICAM_SensorActiveHeight;
     int PICAM_SensorActiveLeftMargin;
     int PICAM_SensorActiveRightMargin;
@@ -231,6 +232,7 @@ protected:
     int PICAM_SensorMaskedHeight;
     int PICAM_SensorMaskedTopMargin;
     int PICAM_SensorSecondaryActiveHeight;
+    int PICAM_SensorActiveExtendedHeight;
     int PICAM_SensorSecondaryMaskedHeight;
     int PICAM_SensorType;
 
@@ -372,6 +374,7 @@ protected:
     int PICAM_SensorMaskedHeightExists;
     int PICAM_SensorMaskedTopMarginExists;
     int PICAM_SensorSecondaryActiveHeightExists;
+    int PICAM_SensorActiveExtendedHeightExists;
     int PICAM_SensorSecondaryMaskedHeightExists;
     int PICAM_SensorTypeExists;
     int PICAM_ActiveBottomMarginExists;
@@ -502,6 +505,7 @@ protected:
     int PICAM_SensorMaskedHeightRelevant;
     int PICAM_SensorMaskedTopMarginRelevant;
     int PICAM_SensorSecondaryActiveHeightRelevant;
+    int PICAM_SensorActiveExtendedHeightRelevant;
     int PICAM_SensorSecondaryMaskedHeightRelevant;
     int PICAM_SensorTypeRelevant;
     int PICAM_ActiveBottomMarginRelevant;
@@ -537,7 +541,7 @@ private:
     pibln acqStatusRunning;
     piint availableCamerasCount;
     const PicamCameraID *availableCameraIDs;
-    std::vector<pibyte> buffer_;
+    std::vector<pi16s> buffer_;
     PicamHandle currentCameraHandle;
     PicamHandle currentDeviceHandle;
     epicsMutex dataLock;
@@ -555,8 +559,8 @@ private:
     std::unordered_map<PicamParameter, int> parameterValueMap;
     std::unordered_map<int, PicamParameter> picamParameterMap;
     asynStatus initializeDetector();
-    asynStatus piAcquireStart();
-    asynStatus piAcquireStop();
+    asynStatus piAcquireStart(asynUser *pasynUser);
+    asynStatus piAcquireStop(asynUser *pasynUser);
     asynStatus piClearParameterExists();
     asynStatus piClearParameterRelevance();
     asynStatus piCreateAndIndexADParam(const char * name,
@@ -593,8 +597,10 @@ private:
     asynStatus piSetParameterRelevance(asynUser *pasynUser,
             PicamParameter parameter, int relevence);
     asynStatus piSetParameterValuesFromSelectedCamera();
-    asynStatus piSetRois(int minX, int minY, int width, int height, int binX,
-            int binY);
+    asynStatus piSetRoisValuesFromSelectedCamera(const PicamParameter& parameter);
+    asynStatus piSetSingleRoi(int minX, int minY, int sizeX, int sizeY, int binX,
+        int binY);
+    asynStatus piSetMultiRoi(asynUser *pasynUser, int minX, int sizeX, int binX);
     asynStatus piSetSelectedCamera(asynUser *pasynUser, int selectedIndex);
     asynStatus piSetSelectedUnavailableCamera(asynUser *pasynUser,
             int selectedIndex);
@@ -754,6 +760,7 @@ private:
 #define PICAM_SensorMaskedHeightString           "PICAM_SENSOR_MASKED_HEIGHT"
 #define PICAM_SensorMaskedTopMarginString        "PICAM_SENSOR_MASKED_TOP_MARGIN"
 #define PICAM_SensorSecondaryActiveHeightString  "PICAM_SENSOR_SECONDARY_ACTIVE_HEIGHT"
+#define PICAM_SensorActiveExtendedHeightString   "PICAM_SENSOR_ACTIVE_EXTENDED_HEIGHT"
 #define PICAM_SensorSecondaryMaskedHeightString  "PICAM_SENSOR_SECONDARY_MASKED_HEIGHT"
 #define PICAM_SensorTypeString                   "PICAM_SENSOR_TYPE"
 
