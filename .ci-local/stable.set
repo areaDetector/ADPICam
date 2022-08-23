@@ -1,0 +1,24 @@
+MODULES=calc asyn autosave busy stream area_Detector ADSupport ADCore princetonspectro
+
+BASE=R7.0.6.1
+CALC=R3-7-4
+ASYN=R4-41
+AUTOSAVE=R5-7-1
+BUSY=R1-7-1
+STREAM=2.8.22
+
+AREA_DETECTOR=R3-11
+AREA_DETECTOR_REPOURL=https://github.com/areaDetector/areaDetector
+AREA_DETECTOR_RECURSIVE=NO
+AREA_DETECTOR_HOOK=.ci-local/area_detector_hook.sh
+ADSUPPORT=master
+ADSUPPORT_REPOURL=https://github.com/pheest/ADSupport
+ADSUPPORT_RECURSIVE=NO
+ADSUPPORT_HOOK=.ci-local/adsupport_hook.sh
+ADCORE=master
+ADCORE_REPOURL=https://github.com/pheest/ADCore
+ADCORE_RECURSIVE=NO
+ADCORE_HOOK=.ci-local/adcore_hook.sh
+PRINCETONSPECTRO=master
+PRINCETONSPECTRO_REPOURL=https://github.com/ukaea/PrincetonSpectro
+PRINCETONSPECTRO_RECURSIVE=NO

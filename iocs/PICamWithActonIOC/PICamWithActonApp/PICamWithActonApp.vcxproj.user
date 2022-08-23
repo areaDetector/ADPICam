@@ -1,0 +1,91 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_DLL|Win32'">
+    <LocalDebuggerWorkingDirectory>..\iocBoot\iocPICamWithActon\</LocalDebuggerWorkingDirectory>
+    <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
+    <LocalDebuggerCommandArguments>st.cmd &gt; PICamWithActonApp.log 2&gt;&amp;1</LocalDebuggerCommandArguments>
+    <LocalDebuggerEnvironment>TOP=../../../..
+ADCORE=/EPICS/support/areaDetector/ADCore
+ADPICAM=/EPICS/support/areaDetector/ADPICam
+AUTOSAVE=/EPICS/support/autosave
+CALC=/EPICS/support/calc
+PATH=%PATH%;\EPICS\iocTops\PrincetonSpectro\ARC_InstrumentApp\Acton</LocalDebuggerEnvironment>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_LIB|Win32'">
+    <LocalDebuggerWorkingDirectory>..\iocBoot\iocPICamWithActon\</LocalDebuggerWorkingDirectory>
+    <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
+    <LocalDebuggerCommandArguments>st.cmd &gt; PICamWithActonApp.log 2&gt;&amp;1</LocalDebuggerCommandArguments>
+    <LocalDebuggerEnvironment>TOP=../../../..
+ADCORE=/EPICS/support/areaDetector/ADCore
+ADPICAM=/EPICS/support/areaDetector/ADPICam
+AUTOSAVE=/EPICS/support/autosave
+CALC=/EPICS/support/calc
+PATH=%PATH%;\EPICS\iocTops\PrincetonSpectro\ARC_InstrumentApp\Acton</LocalDebuggerEnvironment>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_DLL|Win32'">
+    <LocalDebuggerWorkingDirectory>..\iocBoot\iocPICamWithActon\</LocalDebuggerWorkingDirectory>
+    <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
+    <LocalDebuggerCommandArguments>st.cmd &gt; PICamWithActonApp.log 2&gt;&amp;1</LocalDebuggerCommandArguments>
+    <LocalDebuggerEnvironment>TOP=../../../..
+ADCORE=/EPICS/support/areaDetector/ADCore
+ADPICAM=/EPICS/support/areaDetector/ADPICam
+AUTOSAVE=/EPICS/support/autosave
+CALC=/EPICS/support/calc
+PATH=%PATH%;\EPICS\iocTops\PrincetonSpectro\ARC_InstrumentApp\Acton</LocalDebuggerEnvironment>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_LIB|Win32'">
+    <LocalDebuggerWorkingDirectory>..\iocBoot\iocPICamWithActon\</LocalDebuggerWorkingDirectory>
+    <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
+    <LocalDebuggerCommandArguments>st.cmd &gt; PICamWithActonApp.log 2&gt;&amp;1</LocalDebuggerCommandArguments>
+    <LocalDebuggerEnvironment>TOP=../../../..
+ADCORE=/EPICS/support/areaDetector/ADCore
+ADPICAM=/EPICS/support/areaDetector/ADPICam
+AUTOSAVE=/EPICS/support/autosave
+CALC=/EPICS/support/calc
+PATH=%PATH%;\EPICS\iocTops\PrincetonSpectro\ARC_InstrumentApp\Acton</LocalDebuggerEnvironment>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_DLL|x64'">
+    <LocalDebuggerWorkingDirectory>..\iocBoot\iocPICamWithActon\</LocalDebuggerWorkingDirectory>
+    <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
+    <LocalDebuggerCommandArguments>st.cmd &gt; PICamWithActonApp.log 2&gt;&amp;1</LocalDebuggerCommandArguments>
+    <LocalDebuggerEnvironment>TOP=../../../..
+ADCORE=/EPICS/support/areaDetector/ADCore
+ADPICAM=/EPICS/support/areaDetector/ADPICam
+AUTOSAVE=/EPICS/support/autosave
+CALC=/EPICS/support/calc
+PATH=%PATH%;\EPICS\iocTops\PrincetonSpectro\ARC_InstrumentApp\Acton</LocalDebuggerEnvironment>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_LIB|x64'">
+    <LocalDebuggerWorkingDirectory>..\iocBoot\iocPICamWithActon\</LocalDebuggerWorkingDirectory>
+    <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
+    <LocalDebuggerCommandArguments>st.cmd &gt; PICamWithActonApp.log 2&gt;&amp;1</LocalDebuggerCommandArguments>
+    <LocalDebuggerEnvironment>TOP=../../../..
+ADCORE=/EPICS/support/areaDetector/ADCore
+ADPICAM=/EPICS/support/areaDetector/ADPICam
+AUTOSAVE=/EPICS/support/autosave
+CALC=/EPICS/support/calc
+PATH=%PATH%;\EPICS\iocTops\PrincetonSpectro\ARC_InstrumentApp\Acton</LocalDebuggerEnvironment>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_DLL|x64'">
+    <LocalDebuggerWorkingDirectory>..\iocBoot\iocPICamWithActon\</LocalDebuggerWorkingDirectory>
+    <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
+    <LocalDebuggerCommandArguments>st.cmd &gt; PICamWithActonApp.log 2&gt;&amp;1</LocalDebuggerCommandArguments>
+    <LocalDebuggerEnvironment>TOP=../../../..
+ADCORE=/EPICS/support/areaDetector/ADCore
+ADPICAM=/EPICS/support/areaDetector/ADPICam
+AUTOSAVE=/EPICS/support/autosave
+CALC=/EPICS/support/calc
+PATH=%PATH%;\EPICS\iocTops\PrincetonSpectro\ARC_InstrumentApp\Acton</LocalDebuggerEnvironment>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_LIB|x64'">
+    <LocalDebuggerWorkingDirectory>..\iocBoot\iocPICamWithActon\</LocalDebuggerWorkingDirectory>
+    <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
+    <LocalDebuggerCommandArguments>st.cmd &gt; PICamWithActonApp.log 2&gt;&amp;1</LocalDebuggerCommandArguments>
+    <LocalDebuggerEnvironment>TOP=../../../..
+ADCORE=/EPICS/support/areaDetector/ADCore
+ADPICAM=/EPICS/support/areaDetector/ADPICam
+AUTOSAVE=/EPICS/support/autosave
+CALC=/EPICS/support/calc
+PATH=%PATH%;\EPICS\iocTops\PrincetonSpectro\ARC_InstrumentApp\Acton</LocalDebuggerEnvironment>
+  </PropertyGroup>
+</Project>

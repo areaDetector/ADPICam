@@ -25,6 +25,12 @@ else
 $(PROD_NAME)_SYS_LIBS += picam piac picc pida pidi
 endif
 
+ifeq (mingw, $(findstring mingw, $(T_A)))
+  # static build only, multiple definition of pthread_create, pthread_cond_init, etc on Linux.
+  # I don't know how to fix it.
+  USR_LDFLAGS += -Wl,-allow-multiple-definition
+endif
+
 include $(ADCORE)/ADApp/commonDriverMakefile
 
 #=============================
