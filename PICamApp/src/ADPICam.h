@@ -26,6 +26,23 @@
 #include "picam_advanced.h"
 
 
+namespace std {
+
+template<>
+struct hash<PicamParameter>
+{
+    typedef PicamParameter argument_type;
+    typedef int result_type;
+    result_type operator () (const argument_type& x) const
+    {
+        using type = typename std::underlying_type<argument_type>::type;
+        return std::hash<type>()(static_cast<type>(x));
+    }
+};
+
+}
+
+
 class epicsShareClass ADPICam: public ADDriver {
 public:
     static const char *notAvailable;
