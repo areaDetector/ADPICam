@@ -165,20 +165,20 @@ PICam specific parameters
     - PICAM_CUSTOM_MODULATION_SEQUENCE
     -
     -
-  * - PICAM_DifEndingGate
-    - TBD
-    -
-    -
-    - PICAM_DIF_ENDING_GATE
-    -
-    -
-  * - PICAM_DifStartingGate
-    - TBD
+  * - PICAM_DifEndingGateDelay, PICAM_DifEndingGateWidth
+    - asynFloat64
     - r/w
     -
-    - PICAM_DIF_STARTING_GATE
+    - PICAM_DIF_ENDING_GATE_DELAY, PICAM_DIF_ENDING_GATE_WIDTH
+    - $(P)$(R)DifEndGateDelay, $(P)$(R)DifEndGateDelay_RBV, $(P)$(R)DifEndGateWidth, $(P)$(R)DifEndGateWidth_RBV
+    - ao, ai
+  * - PICAM_DifStartingGate
+    - asynFloat64
+    - r/w
     -
-    -
+    - PICAM_DIF_STARTING_GATE_DELAY, PICAM_DIF_STARTING_GATE_WIDTH
+    - $(P)$(R)DifStartGateDelay, $(P)$(R)DifStartGateDelay_RBV, $(P)$(R)DifStartGateWidth, $(P)$(R)DifStartGateWidth_RBV
+    - ao, ai
   * - PICAM_EMIccdGain
     - asynInt32
     - r/w
@@ -294,12 +294,12 @@ PICam specific parameters
     - $(P)$(R)PhotocathodeSensitivity
     - mbbi
   * - PICAM_RepetitiveGate
-    - TBD Pulse
+    - asynFloat64
     - r/w
     -
-    - PICAM_REPETITIVE_GATE
-    -
-    -
+    - PICAM_REPETITIVE_GATE_DELAY, PICAM_REPETITIVE_GATE_WIDTH
+    - $(P)$(R)RepetitiveGateDelay, $(P)$(R)RepetitiveGateDelay_RBV, $(P)$(R)RepetitiveGateWidth, $(P)$(R)RepetitiveGateWidth_RBV
+    - ao, ai
   * - PICAM_RepetitiveModulation
     - asynFloat64
     - r/w
@@ -322,19 +322,19 @@ PICam specific parameters
     - $(P)$(R)SequentialEndingModulationPhase, $(P)$(R)SequentialEndingModulationPhase_RBV
     - bi
   * - PICAM_SequentialEndingGate
-    - TBD Pulse
+    - asynFloat64
     - r/w
     -
-    - PICAM_SEQUENTIAL_ENDING_GATE
-    -
-    -
+    - PICAM_SEQUENTIAL_ENDING_GATE_DELAY, PICAM_SEQUENTIAL_ENDING_WIDTH
+    - $(P)$(R)SeqEndGateDelay, $(P)$(R)SeqEndGateDelay_RBV, $(P)$(R)SeqEndGateWidth, $(P)$(R)SeqEndGateWidth_RBV
+    - ao, ai
   * - PICAM_SequentialGateStepCount
     - asynInt32
     - r/w
     -
     - PICAM_SEQUENTIAL_GATE_STEP_COUNT
     - $(P)$(R)SequentialGateStepCount, $(P)$(R)SequentialGateStepCount_RBV
-    - longout  
+    - longout
       longin
   * - PICAM_SequentialGateStepIterations
     - asynInt32
@@ -342,15 +342,15 @@ PICam specific parameters
     -
     - PICAM_SEQUENTIAL_GATE_STEP_ITERATIONS
     - $(P)$(R)SequentialGateStepIterations, $(P)$(R)SequentialGateStepIterations
-    - longout  
+    - longout
       longin
   * - PICAM_SequentialStartingGate
-    - TBD Pulse
+    - asynFloat64
     - r/w
     -
-    - PICAM_SEQUENTIAL_STARTING_GATE
-    -
-    -
+    - PICAM_SEQUENTIAL_STARTING_GATE_DELAY, PICAM_SEQUENTIAL_STARTING_WIDTH
+    - $(P)$(R)SeqStartGateDelay, $(P)$(R)SeqStartGateDelay_RBV, $(P)$(R)SeqStartGateWidth, $(P)$(R)SeqStartGateWidth_RBV
+    - ao, ai
   * - **Analog To Digital Conversion**
   * - PICAM_AdcAnalogGain
     - asynInt32
@@ -402,12 +402,12 @@ PICam specific parameters
     -
     - **Hardware I/O**
   * - PICAM_AuxOutput
-    - TBD Pulse
+    - asynFloat64
     - r/w
     -
-    - PICAM_AUX_OUTPUT
-    -
-    -
+    - PICAM_AUX_OUTPUT_DELAY, PICAM_AUX_OUTPUT_WIDTH
+    - $(P)$(R)AuxOutputDelay, $(P)$(R)AuxOutputDelay_RBV, $(P)$(R)AuxOutputWidth, $(P)$(R)AuxOutputWidth_RBV
+    - ao, ai
   * - PICAM_EnableModulationOutputSignal
     - asynInt32
     - r/o
@@ -1013,6 +1013,16 @@ PICam specific parameters
       $(P)$(R)CleanUntilTrigger_RBV
     - bo  
       bi
+  * - PICAM_StopCleaningOnPreTrigger
+    - asynInt32
+    - r/w
+    -
+    - PICAM_STOP_CLEANING_ON_PRE_TRIGGER
+    - $(P)$(R)StopCleaningOnPreTrigger
+      $(P)$(R)StopCleaningOnPreTrigger_RBV
+    - bo
+      bi
+
   * - **SensorTemperature**
   * - PICAM_DisableCoolingFan
     - asynInt32

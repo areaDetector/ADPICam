@@ -22,3 +22,5 @@ libEb*
 libG*
 lib*gcc*
 libp*
+
+.clangd

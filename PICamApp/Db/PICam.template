@@ -1069,6 +1069,14 @@ record(bi, "$(P)$(R)CleanUntilTrigger_EX")
     field(SCAN, "I/O Intr")
 }
 
+record(bi, "$(P)$(R)StopCleaningOnPreTrigger_EX")
+{
+    field(DESC, "")
+    field(INP, "@asyn($(PORT),$(ADDR),$(TIMEOUT))PICAM_STOP_CLEANING_ON_PRE_TRIGGER")
+    field(DTYP, "asynInt32")
+    field(SCAN, "I/O Intr")
+}
+
 record(bi, "$(P)$(R)DisableCoolingFan_EX")
 {
     field(DESC, "")
@@ -2077,6 +2085,14 @@ record(bi, "$(P)$(R)CleanUntilTrigger_PR")
     field(SCAN, "I/O Intr")
 }
 
+record(bi, "$(P)$(R)StopCleaningOnPreTrigger_PR")
+{
+    field(DESC, "")
+    field(INP, "@asyn($(PORT),$(ADDR),$(TIMEOUT))PICAM_STOP_CLEANING_ON_PRE_TRIGGER")
+    field(DTYP, "asynInt32")
+    field(SCAN, "I/O Intr")
+}
+
 record(bi, "$(P)$(R)DisableCoolingFan_PR")
 {
     field(DESC, "")
@@ -2163,8 +2179,156 @@ record(bi, "$(P)$(R)BracketGating_RBV")
 }
 
 #TODO Add CustomModulationSequence
-#TODO Add DifEndingGate
-#TODO Add DifStartingGate
+
+record(ai, "$(P)$(R)RepetitiveGateDelay_RBV") {
+    field(DTYP, "asynFloat64")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PICAM_REPETITIVE_GATE_DELAY")
+    field(PREC, "3")
+    field(EGU,  "ns")
+    field(SCAN, "I/O Intr")
+}
+
+record(ao, "$(P)$(R)RepetitiveGateDelay") {
+    field(DTYP, "asynFloat64")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PICAM_REPETITIVE_GATE_DELAY")
+    field(PREC, "3")
+    field(EGU,  "ns")
+}
+
+record(ai, "$(P)$(R)RepetitiveGateWidth_RBV") {
+    field(DTYP, "asynFloat64")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PICAM_REPETITIVE_GATE_WIDTH")
+    field(PREC, "3")
+    field(EGU,  "ns")
+    field(SCAN, "I/O Intr")
+}
+
+record(ao, "$(P)$(R)RepetitiveGateWidth") {
+    field(DTYP, "asynFloat64")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PICAM_REPETITIVE_GATE_WIDTH")
+    field(PREC, "3")
+    field(EGU,  "ns")
+}
+
+record(ai, "$(P)$(R)SeqStartGateDelay_RBV") {
+    field(DTYP, "asynFloat64")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PICAM_SEQUENTIAL_STARTING_GATE_DELAY")
+    field(PREC, "3")
+    field(EGU,  "ns")
+    field(SCAN, "I/O Intr")
+}
+
+record(ao, "$(P)$(R)SeqStartGateDelay") {
+    field(DTYP, "asynFloat64")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PICAM_SEQUENTIAL_STARTING_GATE_DELAY")
+    field(PREC, "3")
+    field(EGU,  "ns")
+}
+
+record(ai, "$(P)$(R)SeqStartGateWidth_RBV") {
+    field(DTYP, "asynFloat64")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PICAM_SEQUENTIAL_STARTING_GATE_WIDTH")
+    field(PREC, "3")
+    field(EGU,  "ns")
+    field(SCAN, "I/O Intr")
+}
+
+record(ao, "$(P)$(R)SeqStartGateWidth") {
+    field(DTYP, "asynFloat64")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PICAM_SEQUENTIAL_STARTING_GATE_WIDTH")
+    field(PREC, "3")
+    field(EGU,  "ns")
+}
+
+record(ai, "$(P)$(R)SeqEndGateDelay_RBV") {
+    field(DTYP, "asynFloat64")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PICAM_SEQUENTIAL_ENDING_GATE_DELAY")
+    field(PREC, "3")
+    field(EGU,  "ns")
+    field(SCAN, "I/O Intr")
+}
+
+record(ao, "$(P)$(R)SeqEndGateDelay") {
+    field(DTYP, "asynFloat64")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PICAM_SEQUENTIAL_ENDING_GATE_DELAY")
+    field(PREC, "3")
+    field(EGU,  "ns")
+}
+
+record(ai, "$(P)$(R)SeqEndGateWidth_RBV") {
+    field(DTYP, "asynFloat64")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PICAM_SEQUENTIAL_ENDING_GATE_WIDTH")
+    field(PREC, "3")
+    field(EGU,  "ns")
+    field(SCAN, "I/O Intr")
+}
+
+record(ao, "$(P)$(R)SeqEndGateWidth") {
+    field(DTYP, "asynFloat64")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PICAM_SEQUENTIAL_ENDING_GATE_WIDTH")
+    field(PREC, "3")
+    field(EGU,  "ns")
+}
+
+record(ai, "$(P)$(R)DifStartGateDelay_RBV") {
+    field(DTYP, "asynFloat64")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PICAM_DIF_STARTING_GATE_DELAY")
+    field(PREC, "3")
+    field(EGU,  "ns")
+    field(SCAN, "I/O Intr")
+}
+
+record(ao, "$(P)$(R)DifStartGateDelay") {
+    field(DTYP, "asynFloat64")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PICAM_DIF_STARTING_GATE_DELAY")
+    field(PREC, "3")
+    field(EGU,  "ns")
+}
+
+record(ai, "$(P)$(R)DifStartGateWidth_RBV") {
+    field(DTYP, "asynFloat64")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PICAM_DIF_STARTING_GATE_WIDTH")
+    field(PREC, "3")
+    field(EGU,  "ns")
+    field(SCAN, "I/O Intr")
+}
+
+record(ao, "$(P)$(R)DifStartGateWidth") {
+    field(DTYP, "asynFloat64")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PICAM_DIF_STARTING_GATE_WIDTH")
+    field(PREC, "3")
+    field(EGU,  "ns")
+}
+
+record(ai, "$(P)$(R)DifEndGateDelay_RBV") {
+    field(DTYP, "asynFloat64")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PICAM_DIF_ENDING_GATE_DELAY")
+    field(PREC, "3")
+    field(EGU,  "ns")
+    field(SCAN, "I/O Intr")
+}
+
+record(ao, "$(P)$(R)DifEndGateDelay") {
+    field(DTYP, "asynFloat64")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PICAM_DIF_ENDING_GATE_DELAY")
+    field(PREC, "3")
+    field(EGU,  "ns")
+}
+
+record(ai, "$(P)$(R)DifEndGateWidth_RBV") {
+    field(DTYP, "asynFloat64")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PICAM_DIF_ENDING_GATE_WIDTH")
+    field(PREC, "3")
+    field(EGU,  "ns")
+    field(SCAN, "I/O Intr")
+}
+
+record(ao, "$(P)$(R)DifEndGateWidth") {
+    field(DTYP, "asynFloat64")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PICAM_DIF_ENDING_GATE_WIDTH")
+    field(PREC, "3")
+    field(EGU,  "ns")
+}
 
 record(longout, "$(P)$(R)EMIccdGain")
 {
@@ -2438,7 +2602,36 @@ record(mbbi, "$(P)$(R)CorrectPixelBias_RBV")
 }
 
 #################Hardware I/O
-##### Need to add AuxOutput but need to figure out Pulse type
+record(ai, "$(P)$(R)AuxOutputDelay_RBV") {
+    field(DTYP, "asynFloat64")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PICAM_AUX_OUTPUT_DELAY")
+    field(PREC, "3")
+    field(EGU,  "ns")
+    field(SCAN, "I/O Intr")
+}
+
+record(ao, "$(P)$(R)AuxOutputDelay") {
+    field(DTYP, "asynFloat64")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PICAM_AUX_OUTPUT_DELAY")
+    field(PREC, "3")
+    field(EGU,  "ns")
+}
+
+record(ai, "$(P)$(R)AuxOutputWidth_RBV") {
+    field(DTYP, "asynFloat64")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PICAM_AUX_OUTPUT_WIDTH")
+    field(PREC, "3")
+    field(EGU,  "ns")
+    field(SCAN, "I/O Intr")
+}
+
+record(ao, "$(P)$(R)AuxOutputWidth") {
+    field(DTYP, "asynFloat64")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PICAM_AUX_OUTPUT_WIDTH")
+    field(PREC, "3")
+    field(EGU,  "ns")
+}
+
 record(bo, "$(P)$(R)EnableModulationOutputSignal")
 {
     field(PINI, "YES")
@@ -3423,6 +3616,20 @@ record(bi, "$(P)$(R)CleanUntilTrigger_RBV")
     field(SCAN, "I/O Intr")
 }
 
+record(bo, "$(P)$(R)StopCleaningOnPreTrigger")
+{
+    field(PINI, "YES")
+    field(DTYP, "asynInt32")
+    field(OUT, "@asyn($(PORT),$(ADDR),$(TIMEOUT))PICAM_STOP_CLEANING_ON_PRE_TRIGGER")
+}
+
+record(bi, "$(P)$(R)StopCleaningOnPreTrigger_RBV")
+{
+    field(INP, "@asyn($(PORT),$(ADDR),$(TIMEOUT))PICAM_STOP_CLEANING_ON_PRE_TRIGGER")
+    field(DTYP, "asynInt32")
+    field(SCAN, "I/O Intr")
+}
+
 #################### Sensor Temperature
 record(bo, "$(P)$(R)DisableCoolingFan")
 {
@@ -3496,4 +3703,3 @@ record(bi, "$(P)$(R)EnableROISizeYInput")
     field(ZNAM, "Disable")
     field(ONAM, "Enable")
 }
-
